@@ -1,0 +1,7 @@
+gemenv/
+v/
+extracted_data/
+__pycache__/
+downloads/
+bid_results.csv
+filtered_bid_results.csv

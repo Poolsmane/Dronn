@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GeM Bid Scraper</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        .spinner-border {
+            display: none;
+        }
+        .table-responsive {
+            margin-top: 20px;
+        }
+        .table thead th input {
+            width: 100%;
+        }
+        .filter-btn {
+            cursor: pointer;
+        }
+        .filter-btn:hover {
+            text-decoration: underline;
+        }
+        .pagination-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="mb-4">GeM Bid Scraper</h2>
+        <form id="scrape-form">
+            <div class="input-group mb-3">
+                <input type="text" id="keyword" name="keyword" class="form-control" placeholder="Enter Keyword" required>
+                <button type="submit" class="btn btn-primary">Scrape</button>
+            </div>
+        </form>
+
+        <div class="spinner-border text-primary" role="status" id="loading-spinner">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+
+        <div id="message" class="alert d-none mt-3"></div>
+
+        <div class="table-responsive">
+            <div class="mb-3">
+                <label for="rowsPerPage" class="form-label">Rows per page</label>
+                <select id="rowsPerPage" class="form-select" style="width: auto; display: inline-block;">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+
+            <!-- Global Search Input -->
+            <div class="mb-3">
+                <label for="globalSearch" class="form-label">Search Across All Columns</label>
+                <input type="text" class="form-control" id="globalSearch" placeholder="Search for any term across all columns">
+            </div>
+
+            <table class="table table-striped table-bordered" id="results-table">
+                <thead class="table-dark">
+                    <tr>
+                        <th><span class="filter-btn" data-col="0">Bid Number</span></th>
+                        <th><span class="filter-btn" data-col="1">Items</span></th>
+                        <th><span class="filter-btn" data-col="2">Quantity</span></th>
+                        <th><span class="filter-btn" data-col="3">Department</span></th>
+                        <th><span class="filter-btn" data-col="4">Start Date</span></th>
+                        <th><span class="filter-btn" data-col="5">End Date</span></th>
+                        <th>Download</th>
+                    </tr>
+                    <tr class="bg-light">
+                        <th><input type="text" class="form-control form-control-sm" placeholder="Filter" data-col="0"></th>
+                        <th><input type="text" class="form-control form-control-sm" placeholder="Filter" data-col="1"></th>
+                        <th>
+                            <input type="text" class="form-control form-control-sm" id="quantity-filter" placeholder="Filter (e.g., >300, <200)">
+                        </th>
+                        <th><input type="text" class="form-control form-control-sm" placeholder="Filter" data-col="3"></th>
+                        <th><input type="date" class="form-control form-control-sm" id="start-date" data-col="4"></th>
+                        <th><input type="date" class="form-control form-control-sm" id="end-date" data-col="5"></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="pagination-container">
+            <nav>
+                <ul class="pagination" id="pagination-controls"></ul>
+            </nav>
+        </div>
+
+        <a href="/home/kartikeyapatel/Videos/gem/filtered_bid_results.csv" class="btn btn-success mt-3" download>Download CSV</a>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+
+</body>
+</html>
