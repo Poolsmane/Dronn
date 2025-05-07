@@ -125,9 +125,25 @@ function showPage(page) {
             <td>${row["Department"]}</td>
             <td>${row["Start Date"]}</td>
             <td>${row["End Date"]}</td>
-            <td><a href="${row["Downloadable File URL"]}" target="_blank" class="btn btn-sm btn-outline-primary">Download</a></td>
+            <td><a href="${row["Downloadable File URL"]}" target="_blank" class="btn btn-sm btn-outline-primary download-link">Download</a></td>
         `;
         tableBody.appendChild(tr);
+    });
+
+    // Attach event listeners to download links
+    document.querySelectorAll('.download-link').forEach(link => {
+        link.addEventListener('click', function(event) {
+            event.preventDefault();
+            console.log("Download link clicked");
+
+            // Simulate file processing or any other task before showing the popup
+            setTimeout(function() {
+                openAiPopup();  // Open the popup after a 5-second delay
+
+                // After opening the popup, navigate to the download link
+                window.open(event.target.href, '_blank');  // Open the download link in a new tab
+            }, 5000); // 5000 milliseconds = 5 seconds
+        });
     });
 }
 
@@ -165,4 +181,50 @@ globalSearchInput.addEventListener('input', () => {
     currentPage = 1;
     createPagination();
     showPage(currentPage);
+});
+
+// Function to open the AI popup after a delay
+function openAiPopup() {
+    const aiPopup = document.getElementById("ai-agent-popup");
+    const statusMessage = document.getElementById("status-message");
+    const queryFormPopup = document.getElementById("query-form-popup");
+
+    // Ensure the popup is displayed
+    aiPopup.style.display = "block"; // Popup is visible
+
+    // Update status message and show the question form
+    statusMessage.innerText = "File has been processed. You can now ask questions.";
+    queryFormPopup.style.display = "block";  // Show the question form
+}
+
+// Handle question submission
+document.getElementById("query-form-popup").addEventListener("submit", function(event) {
+    event.preventDefault();
+    
+    const question = document.getElementById("question_popup").value;
+
+    // Send the question to the backend for processing
+    fetch('/ask_question', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ question: question })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById("popup-answer").innerText = "Answer: " + data.answer;
+        } else {
+            document.getElementById("popup-answer").innerText = "Error: " + data.error;
+        }
+    })
+    .catch(error => {
+        document.getElementById("popup-answer").innerText = "Error occurred: " + error.message;
+    });
+});
+
+// Close the popup
+document.getElementById("close-ai-popup").addEventListener("click", function() {
+    document.getElementById("ai-agent-popup").style.display = "none";
 });

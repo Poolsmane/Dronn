@@ -1,0 +1,237 @@
+2025-05-06 12:35:52,856 - INFO - Loading faiss with AVX2 support.
+2025-05-06 12:35:52,869 - INFO - Successfully loaded faiss with AVX2 support.
+2025-05-06 12:35:52,871 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-05-06 12:35:52,907 - INFO - Use pytorch device_name: cuda:0
+2025-05-06 12:35:52,908 - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-05-06 12:35:56,870 - INFO - Observer started, monitoring Downloads folder...
+2025-05-06 12:35:56,876 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.0.85:8080
+2025-05-06 12:35:56,876 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-06 12:35:56,877 - INFO -  * Restarting with watchdog (inotify)
+2025-05-06 12:36:00,587 - INFO - Loading faiss with AVX2 support.
+2025-05-06 12:36:00,599 - INFO - Successfully loaded faiss with AVX2 support.
+2025-05-06 12:36:00,603 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-05-06 12:36:00,617 - INFO - Use pytorch device_name: cuda:0
+2025-05-06 12:36:00,617 - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-05-06 12:36:04,844 - INFO - Observer started, monitoring Downloads folder...
+2025-05-06 12:36:04,848 - WARNING -  * Debugger is active!
+2025-05-06 12:36:04,849 - INFO -  * Debugger PIN: 924-208-819
+2025-05-06 12:37:03,088 - INFO - 192.168.0.85 - - [06/May/2025 12:37:03] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:37:03,115 - INFO - 192.168.0.85 - - [06/May/2025 12:37:03] "[33mGET /styles.css HTTP/1.1[0m" 404 -
+2025-05-06 12:37:03,117 - INFO - 192.168.0.85 - - [06/May/2025 12:37:03] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:37:09,918 - INFO - 192.168.0.85 - - [06/May/2025 12:37:09] "GET / HTTP/1.1" 200 -
+2025-05-06 12:37:09,950 - INFO - 192.168.0.85 - - [06/May/2025 12:37:09] "[33mGET /styles.css HTTP/1.1[0m" 404 -
+2025-05-06 12:37:09,951 - INFO - 192.168.0.85 - - [06/May/2025 12:37:09] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:37:12,542 - INFO - 192.168.0.85 - - [06/May/2025 12:37:12] "GET / HTTP/1.1" 200 -
+2025-05-06 12:37:12,564 - INFO - 192.168.0.85 - - [06/May/2025 12:37:12] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:37:12,565 - INFO - 192.168.0.85 - - [06/May/2025 12:37:12] "[33mGET /styles.css HTTP/1.1[0m" 404 -
+2025-05-06 12:37:24,542 - INFO - 192.168.0.85 - - [06/May/2025 12:37:24] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:37:24,576 - INFO - 192.168.0.85 - - [06/May/2025 12:37:24] "[33mGET /styles.css HTTP/1.1[0m" 404 -
+2025-05-06 12:37:24,578 - INFO - 192.168.0.85 - - [06/May/2025 12:37:24] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:37:30,476 - INFO - 192.168.0.85 - - [06/May/2025 12:37:30] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:37:30,496 - INFO - 192.168.0.85 - - [06/May/2025 12:37:30] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:37:30,498 - INFO - 192.168.0.85 - - [06/May/2025 12:37:30] "[33mGET /styles.css HTTP/1.1[0m" 404 -
+2025-05-06 12:39:14,062 - INFO -  * Detected change in '/home/kartikeyapatel/Videos/gem/app.py', reloading
+2025-05-06 12:39:14,063 - INFO -  * Detected change in '/home/kartikeyapatel/Videos/gem/app.py', reloading
+2025-05-06 12:39:14,071 - INFO -  * Detected change in '/home/kartikeyapatel/Videos/gem/app.py', reloading
+2025-05-06 12:39:15,777 - INFO -  * Restarting with watchdog (inotify)
+2025-05-06 12:39:22,602 - INFO - Loading faiss with AVX2 support.
+2025-05-06 12:39:22,615 - INFO - Successfully loaded faiss with AVX2 support.
+2025-05-06 12:39:22,618 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-05-06 12:39:22,645 - INFO - Use pytorch device_name: cuda:0
+2025-05-06 12:39:22,645 - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-05-06 12:39:25,547 - INFO - Observer started, monitoring Downloads folder...
+2025-05-06 12:39:25,550 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-06 12:39:25,550 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-06 12:39:25,550 - INFO -  * Restarting with watchdog (inotify)
+2025-05-06 12:39:29,240 - INFO - Loading faiss with AVX2 support.
+2025-05-06 12:39:29,252 - INFO - Successfully loaded faiss with AVX2 support.
+2025-05-06 12:39:29,255 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-05-06 12:39:29,286 - INFO - Use pytorch device_name: cuda:0
+2025-05-06 12:39:29,286 - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-05-06 12:39:32,660 - INFO - Observer started, monitoring Downloads folder...
+2025-05-06 12:39:32,663 - WARNING -  * Debugger is active!
+2025-05-06 12:39:32,663 - INFO -  * Debugger PIN: 924-208-819
+2025-05-06 12:40:16,838 - INFO -  * Detected change in '/home/kartikeyapatel/Videos/gem/app.py', reloading
+2025-05-06 12:40:16,839 - INFO -  * Detected change in '/home/kartikeyapatel/Videos/gem/app.py', reloading
+2025-05-06 12:40:16,847 - INFO -  * Detected change in '/home/kartikeyapatel/Videos/gem/app.py', reloading
+2025-05-06 12:40:17,822 - INFO -  * Restarting with watchdog (inotify)
+2025-05-06 12:40:24,726 - INFO - Loading faiss with AVX2 support.
+2025-05-06 12:40:24,742 - INFO - Successfully loaded faiss with AVX2 support.
+2025-05-06 12:40:24,745 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-05-06 12:40:24,806 - INFO - Use pytorch device_name: cuda:0
+2025-05-06 12:40:24,806 - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-05-06 12:40:28,381 - INFO - Observer started, monitoring Downloads folder...
+2025-05-06 12:40:28,383 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.0.85:8080
+2025-05-06 12:40:28,383 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-06 12:40:28,384 - INFO -  * Restarting with watchdog (inotify)
+2025-05-06 12:40:32,242 - INFO - Loading faiss with AVX2 support.
+2025-05-06 12:40:32,255 - INFO - Successfully loaded faiss with AVX2 support.
+2025-05-06 12:40:32,258 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-05-06 12:40:32,271 - INFO - Use pytorch device_name: cuda:0
+2025-05-06 12:40:32,271 - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-05-06 12:40:35,602 - INFO - Observer started, monitoring Downloads folder...
+2025-05-06 12:40:35,604 - WARNING -  * Debugger is active!
+2025-05-06 12:40:35,605 - INFO -  * Debugger PIN: 924-208-819
+2025-05-06 12:40:39,244 - INFO - 192.168.0.85 - - [06/May/2025 12:40:39] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:40:39,261 - INFO - 192.168.0.85 - - [06/May/2025 12:40:39] "[33mGET /styles.css HTTP/1.1[0m" 404 -
+2025-05-06 12:40:39,262 - INFO - 192.168.0.85 - - [06/May/2025 12:40:39] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:40:44,884 - INFO - 192.168.0.85 - - [06/May/2025 12:40:44] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:40:44,906 - INFO - 192.168.0.85 - - [06/May/2025 12:40:44] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:40:44,906 - INFO - 192.168.0.85 - - [06/May/2025 12:40:44] "[33mGET /styles.css HTTP/1.1[0m" 404 -
+2025-05-06 12:42:05,224 - INFO - Loading faiss with AVX2 support.
+2025-05-06 12:42:05,237 - INFO - Successfully loaded faiss with AVX2 support.
+2025-05-06 12:42:05,240 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-05-06 12:42:05,271 - INFO - Use pytorch device_name: cuda:0
+2025-05-06 12:42:05,271 - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-05-06 12:42:09,418 - INFO - Observer started, monitoring Downloads folder...
+2025-05-06 12:42:09,422 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.0.85:8080
+2025-05-06 12:42:09,422 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-06 12:42:09,422 - INFO -  * Restarting with watchdog (inotify)
+2025-05-06 12:42:13,446 - INFO - Loading faiss with AVX2 support.
+2025-05-06 12:42:13,462 - INFO - Successfully loaded faiss with AVX2 support.
+2025-05-06 12:42:13,465 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-05-06 12:42:13,498 - INFO - Use pytorch device_name: cuda:0
+2025-05-06 12:42:13,498 - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-05-06 12:42:21,807 - INFO - Loading faiss with AVX2 support.
+2025-05-06 12:42:21,820 - INFO - Successfully loaded faiss with AVX2 support.
+2025-05-06 12:42:21,822 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-05-06 12:42:21,848 - INFO - Use pytorch device_name: cuda:0
+2025-05-06 12:42:21,848 - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-05-06 12:42:25,035 - INFO - Observer started, monitoring Downloads folder...
+2025-05-06 12:42:25,038 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.0.85:8080
+2025-05-06 12:42:25,038 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-06 12:42:25,038 - INFO -  * Restarting with watchdog (inotify)
+2025-05-06 12:42:28,965 - INFO - Loading faiss with AVX2 support.
+2025-05-06 12:42:28,979 - INFO - Successfully loaded faiss with AVX2 support.
+2025-05-06 12:42:28,982 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-05-06 12:42:29,014 - INFO - Use pytorch device_name: cuda:0
+2025-05-06 12:42:29,014 - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-05-06 12:42:33,385 - INFO - Observer started, monitoring Downloads folder...
+2025-05-06 12:42:33,389 - WARNING -  * Debugger is active!
+2025-05-06 12:42:33,389 - INFO -  * Debugger PIN: 924-208-819
+2025-05-06 12:42:33,821 - INFO - 192.168.0.85 - - [06/May/2025 12:42:33] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:33,824 - INFO - 192.168.0.85 - - [06/May/2025 12:42:33] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:33,826 - INFO - 192.168.0.85 - - [06/May/2025 12:42:33] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:33,827 - INFO - 192.168.0.85 - - [06/May/2025 12:42:33] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:33,828 - INFO - 192.168.0.85 - - [06/May/2025 12:42:33] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:33,830 - INFO - 192.168.0.85 - - [06/May/2025 12:42:33] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:33,830 - INFO - 192.168.0.85 - - [06/May/2025 12:42:33] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:33,832 - INFO - 192.168.0.85 - - [06/May/2025 12:42:33] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:33,834 - INFO - 192.168.0.85 - - [06/May/2025 12:42:33] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:33,835 - INFO - 192.168.0.85 - - [06/May/2025 12:42:33] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:33,837 - INFO - 192.168.0.85 - - [06/May/2025 12:42:33] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:33,846 - INFO - 192.168.0.85 - - [06/May/2025 12:42:33] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:42:33,856 - INFO - 192.168.0.85 - - [06/May/2025 12:42:33] "GET /static/style.css HTTP/1.1" 200 -
+2025-05-06 12:42:33,962 - INFO - 192.168.0.85 - - [06/May/2025 12:42:33] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:33,981 - INFO - 192.168.0.85 - - [06/May/2025 12:42:33] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-05-06 12:42:33,981 - INFO - 192.168.0.85 - - [06/May/2025 12:42:33] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:42:34,109 - INFO - 192.168.0.85 - - [06/May/2025 12:42:34] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:34,144 - INFO - 192.168.0.85 - - [06/May/2025 12:42:34] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-05-06 12:42:34,145 - INFO - 192.168.0.85 - - [06/May/2025 12:42:34] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:42:38,319 - INFO - 192.168.0.85 - - [06/May/2025 12:42:38] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:38,334 - INFO - 192.168.0.85 - - [06/May/2025 12:42:38] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-05-06 12:42:38,335 - INFO - 192.168.0.85 - - [06/May/2025 12:42:38] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:42:38,490 - INFO - 192.168.0.85 - - [06/May/2025 12:42:38] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:38,532 - INFO - 192.168.0.85 - - [06/May/2025 12:42:38] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:42:38,533 - INFO - 192.168.0.85 - - [06/May/2025 12:42:38] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-05-06 12:42:38,633 - INFO - 192.168.0.85 - - [06/May/2025 12:42:38] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:38,646 - INFO - 192.168.0.85 - - [06/May/2025 12:42:38] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:42:38,647 - INFO - 192.168.0.85 - - [06/May/2025 12:42:38] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-05-06 12:42:42,618 - INFO - 192.168.0.85 - - [06/May/2025 12:42:42] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:42,649 - INFO - 192.168.0.85 - - [06/May/2025 12:42:42] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:42:42,650 - INFO - 192.168.0.85 - - [06/May/2025 12:42:42] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-05-06 12:42:52,510 - INFO - 192.168.0.85 - - [06/May/2025 12:42:52] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:42:52,528 - INFO - 192.168.0.85 - - [06/May/2025 12:42:52] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:42:52,529 - INFO - 192.168.0.85 - - [06/May/2025 12:42:52] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-05-06 12:46:41,941 - INFO - Loading faiss with AVX2 support.
+2025-05-06 12:46:41,954 - INFO - Successfully loaded faiss with AVX2 support.
+2025-05-06 12:46:41,956 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-05-06 12:46:41,983 - INFO - Use pytorch device_name: cuda:0
+2025-05-06 12:46:41,984 - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-05-06 12:46:45,126 - INFO - Observer started, monitoring Downloads folder...
+2025-05-06 12:46:45,129 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.0.85:8080
+2025-05-06 12:46:45,129 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-06 12:46:45,129 - INFO -  * Restarting with watchdog (inotify)
+2025-05-06 12:46:48,843 - INFO - Loading faiss with AVX2 support.
+2025-05-06 12:46:48,855 - INFO - Successfully loaded faiss with AVX2 support.
+2025-05-06 12:46:48,858 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-05-06 12:46:48,871 - INFO - Use pytorch device_name: cuda:0
+2025-05-06 12:46:48,871 - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-05-06 12:46:51,997 - INFO - Observer started, monitoring Downloads folder...
+2025-05-06 12:46:51,998 - WARNING -  * Debugger is active!
+2025-05-06 12:46:51,999 - INFO -  * Debugger PIN: 924-208-819
+2025-05-06 12:46:54,360 - INFO - 192.168.0.85 - - [06/May/2025 12:46:54] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:46:54,373 - INFO - 192.168.0.85 - - [06/May/2025 12:46:54] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:46:54,377 - INFO - 192.168.0.85 - - [06/May/2025 12:46:54] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-05-06 12:46:55,056 - INFO - 192.168.0.85 - - [06/May/2025 12:46:55] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:46:55,082 - INFO - 192.168.0.85 - - [06/May/2025 12:46:55] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-05-06 12:46:55,083 - INFO - 192.168.0.85 - - [06/May/2025 12:46:55] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:46:55,267 - INFO - 192.168.0.85 - - [06/May/2025 12:46:55] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:46:55,287 - INFO - 192.168.0.85 - - [06/May/2025 12:46:55] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-05-06 12:46:55,288 - INFO - 192.168.0.85 - - [06/May/2025 12:46:55] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:46:56,604 - INFO - 192.168.0.85 - - [06/May/2025 12:46:56] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:46:56,623 - INFO - 192.168.0.85 - - [06/May/2025 12:46:56] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:46:56,624 - INFO - 192.168.0.85 - - [06/May/2025 12:46:56] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-05-06 12:46:59,877 - INFO - 192.168.0.85 - - [06/May/2025 12:46:59] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:46:59,895 - INFO - 192.168.0.85 - - [06/May/2025 12:46:59] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-05-06 12:46:59,896 - INFO - 192.168.0.85 - - [06/May/2025 12:46:59] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:47:49,044 - INFO -  * Detected change in '/home/kartikeyapatel/Videos/gem/app.py', reloading
+2025-05-06 12:47:49,046 - INFO -  * Detected change in '/home/kartikeyapatel/Videos/gem/app.py', reloading
+2025-05-06 12:47:49,047 - INFO -  * Detected change in '/home/kartikeyapatel/Videos/gem/app.py', reloading
+2025-05-06 12:47:49,230 - INFO -  * Detected change in '/home/kartikeyapatel/Videos/gem/app.py', reloading
+2025-05-06 12:47:49,232 - INFO -  * Detected change in '/home/kartikeyapatel/Videos/gem/app.py', reloading
+2025-05-06 12:47:49,243 - INFO -  * Detected change in '/home/kartikeyapatel/Videos/gem/app.py', reloading
+2025-05-06 12:47:49,389 - INFO -  * Detected change in '/home/kartikeyapatel/Videos/gem/app.py', reloading
+2025-05-06 12:47:49,390 - INFO -  * Detected change in '/home/kartikeyapatel/Videos/gem/app.py', reloading
+2025-05-06 12:47:49,400 - INFO -  * Detected change in '/home/kartikeyapatel/Videos/gem/app.py', reloading
+2025-05-06 12:47:50,461 - INFO -  * Restarting with watchdog (inotify)
+2025-05-06 12:47:56,524 - INFO - Loading faiss with AVX2 support.
+2025-05-06 12:47:56,537 - INFO - Successfully loaded faiss with AVX2 support.
+2025-05-06 12:47:56,539 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-05-06 12:47:56,571 - INFO - Use pytorch device_name: cuda:0
+2025-05-06 12:47:56,571 - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-05-06 12:48:00,922 - INFO - Observer started, monitoring Downloads folder...
+2025-05-06 12:48:00,926 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.0.85:8080
+2025-05-06 12:48:00,926 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-06 12:48:00,926 - INFO -  * Restarting with watchdog (inotify)
+2025-05-06 12:48:04,621 - INFO - Loading faiss with AVX2 support.
+2025-05-06 12:48:04,634 - INFO - Successfully loaded faiss with AVX2 support.
+2025-05-06 12:48:04,637 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-05-06 12:48:04,670 - INFO - Use pytorch device_name: cuda:0
+2025-05-06 12:48:04,670 - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-05-06 12:48:07,668 - INFO - Observer started, monitoring Downloads folder...
+2025-05-06 12:48:07,670 - WARNING -  * Debugger is active!
+2025-05-06 12:48:07,670 - INFO -  * Debugger PIN: 924-208-819
+2025-05-06 12:48:10,582 - INFO - 192.168.0.85 - - [06/May/2025 12:48:10] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:48:10,599 - INFO - 192.168.0.85 - - [06/May/2025 12:48:10] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:48:10,602 - INFO - 192.168.0.85 - - [06/May/2025 12:48:10] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-05-06 12:48:11,912 - INFO - 192.168.0.85 - - [06/May/2025 12:48:11] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:48:11,926 - INFO - 192.168.0.85 - - [06/May/2025 12:48:11] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:48:11,927 - INFO - 192.168.0.85 - - [06/May/2025 12:48:11] "GET /static/style.css HTTP/1.1" 200 -
+2025-05-06 12:48:11,930 - INFO - 192.168.0.85 - - [06/May/2025 12:48:11] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-05-06 12:48:13,627 - INFO - 192.168.0.85 - - [06/May/2025 12:48:13] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:48:13,642 - INFO - 192.168.0.85 - - [06/May/2025 12:48:13] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:48:13,643 - INFO - 192.168.0.85 - - [06/May/2025 12:48:13] "GET /static/style.css HTTP/1.1" 200 -
+2025-05-06 12:48:13,646 - INFO - 192.168.0.85 - - [06/May/2025 12:48:13] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-05-06 12:48:18,972 - INFO - 192.168.0.85 - - [06/May/2025 12:48:18] "GET /?keyword=web+development HTTP/1.1" 200 -
+2025-05-06 12:48:18,990 - INFO - 192.168.0.85 - - [06/May/2025 12:48:18] "[33mGET /script.js HTTP/1.1[0m" 404 -
+2025-05-06 12:48:18,991 - INFO - 192.168.0.85 - - [06/May/2025 12:48:18] "[36mGET /static/style.css HTTP/1.1[0m" 304 -

@@ -96,9 +96,33 @@
 
         <a href="/home/kartikeyapatel/Videos/gem/filtered_bid_results.csv" class="btn btn-success mt-3" download>Download CSV</a>
     </div>
+    <!-- AI Agent Popup -->
+<!-- Centered AI Agent Popup -->
+<!-- Centered AI Agent Popup -->
+<div id="ai-agent-popup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:600px; height:400px; background:white; border:1px solid #ccc; box-shadow:0 0 15px rgba(0,0,0,0.3); padding:20px; z-index:9999; border-radius:10px;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h5 style="margin:0;">🤖 AI Agent</h5>
+        <button id="close-ai-popup" style="border:none; background:none; font-size:24px; cursor:pointer;">&times;</button>
+    </div>
+    <hr />
+    <div id="ai-content" style="margin-top:15px; overflow-y:auto; height:80%;">
+        <!-- Status or Processing Message -->
+        <div id="status-message" style="margin-bottom: 10px;">Processing... Please wait.</div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+        <!-- Question Form (hidden initially, shown after processing) -->
+        <form id="query-form-popup" style="display:none;">
+            <label for="question_popup">Ask a question:</label><br>
+            <input type="text" id="question_popup" name="question" style="width:100%;" required><br><br>
+            <button type="submit" style="padding:8px 16px;">Ask</button>
+        </form>
 
+        <!-- Answer section -->
+        <div id="popup-answer" style="margin-top:20px; font-weight:bold;"></div>
+    </div>
+</div>
+
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
 </html>
