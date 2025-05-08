@@ -9,10 +9,12 @@ from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
 from pdfminer.pdfparser import PDFSyntaxError
+import pytesseract
+from pdf2image import convert_from_path
 
 # Initialize SentenceTransformer model
 embedder = SentenceTransformer('all-MiniLM-L6-v2')
-
+all_text_final=""
 # Function to extract text and links from PDF
 def extract_text_and_links(pdf_path):
     text_content = ""
@@ -21,20 +23,34 @@ def extract_text_and_links(pdf_path):
     try:
         with pdfplumber.open(pdf_path) as pdf:
             for i, page in enumerate(pdf.pages):
-                print(f"Reading page {i + 1}/{len(pdf.pages)}")
+                print(f"📄 Reading page {i + 1}/{len(pdf.pages)}")
                 page_text = page.extract_text()
                 if page_text:
                     text_content += page_text + "\n"
+                else:
+                    print(f"⚠️ No text found on page {i + 1}, using OCR fallback...")
+                    image = convert_from_path(pdf_path, first_page=i+1, last_page=i+1)[0]
+                    custom_oem_psm_config = r'--oem 3 --psm 6'
+                    ocr_text = pytesseract.image_to_string(image, config=custom_oem_psm_config)
+                    text_content += ocr_text + "\n"
 
-                if page.annots:
-                    for annot in page.annots:
-                        uri = annot.get("uri")
-                        if uri and uri.startswith("http"):
-                            links.add(uri)
+                # Extract links robustly
+                try:
+                    if page.annots:
+                        for annot in page.annots:
+                            uri = annot.get("uri")
+                            if uri and uri.startswith("http"):
+                                links.add(uri)
+                except Exception:
+                    # Fallback if annots don't exist
+                    pass
+
     except Exception as e:
         print(f"❌ Failed to read {pdf_path}: {e}")
+        return "", []
 
     return text_content.strip(), list(links)
+
 
 # Function to generate filenames for linked files
 def generate_filenames(n):
@@ -78,13 +94,23 @@ def download_linked_files(links, download_dir):
     return downloaded_files
 
 # Function to find relevant chunks based on the query
-def find_relevant_chunks(text, query, chunk_size=700, overlap=200, top_k=3):
+def find_relevant_chunks(text, query, chunk_size=500, overlap=200, top_k=3):
     try:
+        # Preprocess: Remove excessive whitespace
+        text = ' '.join(text.split())
+
+        if not text.strip():
+            return "❌ No text found after preprocessing."
+
+        # Split into overlapping chunks
         chunks = []
         for i in range(0, len(text), chunk_size - overlap):
-            chunk = text[i:i + chunk_size]
-            if len(chunk.strip()) > 20:
+            chunk = text[i:i + chunk_size].strip()
+            if len(chunk) >= 50:  # Lowered from 20 to 50 to ensure richer chunks
                 chunks.append(chunk)
+
+        if not chunks:
+            return "❌ No valid text chunks found for embedding."
 
         chunk_embeddings = embedder.encode(chunks, convert_to_numpy=True)
         query_embedding = embedder.encode([query], convert_to_numpy=True)
@@ -110,8 +136,10 @@ def ask_ollama(prompt, model="deepseek-r1"):
         stdout, _ = process.communicate(input=prompt)
         return stdout.strip()
     except subprocess.CalledProcessError as e:
+        print(e)
         return f"❌ Error calling Ollama subprocess: {str(e)}"
     except Exception as e:
+        print(e)
         return f"❌ Error while communicating with Ollama: {str(e)}"
 
 # Function to send a question to the API for an answer
@@ -128,13 +156,15 @@ def ask_question_via_api(question, context):
         else:
             return f"❌ Error: Unable to get answer from API. Status code: {response.status_code}"
     except Exception as e:
+        print(e)
         return f"❌ Error while making API request: {str(e)}"
 
 # Function to monitor latest_moved_file.txt and restart RAG agent if it changes
+
 def monitor_and_run_rag(poll_interval=3):
     last_pdf_path = None
     last_all_text = None
-
+    global all_text_final
     while True:
         if not os.path.exists("latest_moved_path.txt"):
             print("⚠️ latest_moved_path.txt not found. Waiting...")
@@ -154,6 +184,7 @@ def monitor_and_run_rag(poll_interval=3):
             try:
                 text, links = extract_text_and_links(current_pdf_path)
                 print(f"🔍 Extracted main PDF text length: {len(text)}")
+                print(f"✅ Raw extracted text (first 500 chars): {text[:500]}")
                 all_text = text
 
                 if links:
@@ -162,7 +193,7 @@ def monitor_and_run_rag(poll_interval=3):
                         if fpath.endswith(".pdf") and os.path.exists(fpath):
                             file_text, _ = extract_text_and_links(fpath)
                             print(f"📄 Extracted linked file {fpath} text length: {len(file_text)}")
-                            all_text += "\n\n" + file_text
+                            all_text += "\n" + file_text
                 else:
                     print("ℹ️ No links found in main PDF.")
 
@@ -171,7 +202,7 @@ def monitor_and_run_rag(poll_interval=3):
                     time.sleep(poll_interval)
                     continue
 
-                # Only update if everything is successful
+                # Update last seen state
                 last_pdf_path = current_pdf_path
                 last_all_text = all_text
                 print("\n✅ Ready to answer questions from the new document.")
@@ -181,50 +212,41 @@ def monitor_and_run_rag(poll_interval=3):
                 time.sleep(poll_interval)
                 continue
 
-        # Start user Q&A
-        print("\n🧠 You can now ask questions. Type 'exit' to stop.")
-        while True:
-        #     user_question = input("\n❓ Ask your question (or type 'exit'): ").strip()
-        #     if user_question.lower() in ['exit', 'quit']:
-        #         print("👋 Session ended. Waiting for file change...")
-        #         break
-
-            # Check if file changed mid-session
-            with open("latest_moved_path.txt", "r") as f:
-                check_pdf_path = f.read().strip()
-            if check_pdf_path != last_pdf_path:
-                print("\n⚠️ File changed during conversation. Restarting session...")
-                break
+        # If last_all_text is ready, start Q&A
+        if last_all_text:
+            # print("\n🧠 You can now ask questions. Type 'exit' to stop.")
+            while True:
+               
+                # Check if file changed mid-session
+                with open("latest_moved_path.txt", "r") as f:
+                    check_pdf_path = f.read().strip()
+                if check_pdf_path != last_pdf_path:
+                    print("\n⚠️ File changed during conversation. Restarting session...")
+                    break
 
 
+                try:
+                    all_text_final=last_all_text
 
-# Function for API-based question answering using RAG
+                except Exception as e:
+                    print(f"❌ Error answering question: {e}")
+
+
 def process_with_rag_agent(question):
+    global all_text_final
+    print(f"all text is:{all_text_final}")
     try:
-        context="The answer from the read rfp pdf is:"
-        chunks = find_relevant_chunks(question,context)
+        chunks = find_relevant_chunks(all_text_final,question)
         if isinstance(chunks, str) and chunks.startswith("❌"):
             return chunks
-        prompt = f"""You are a highly accurate RAG agent helping analyze RFP documents. 
-Answer the question strictly based **only** on the given context from the documents (including linked files). 
-Do not add any information that is not present in the context. 
-If the answer is not present, say "The document does not contain this information."
 
-Respond clearly and concisely, in bullet points if applicable.
-
----
-
-Context:
-{context}
-
----
-
-Question:
-{question}
-"""
-        return ask_ollama(prompt)  # Or route to API if needed
+        context = "\n\n".join(chunks)
+        prompt = f"Based on the following document context, answer the question accurately in points:\n\n{context}\n\nQuestion: {question}"
+        return ask_ollama(prompt)  # Or use ask_question_via_api(question, context)
     except Exception as e:
+        print(e)
         return f"❌ Error in process_with_rag_agent: {str(e)}"
+
 
 
 # Run the dynamic watcher if script is executed

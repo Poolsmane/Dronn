@@ -18,6 +18,57 @@ let data = [];
 let currentPage = 1;
 let rowsPerPage = parseInt(rowsPerPageSelect.value);
 
+// Automatically run scraping for keywords on page load
+window.onload = async function () {
+    const keywords = ['lms', 'blockchain', 'web development'];
+    spinner.style.display = 'inline-block';
+    tableBody.innerHTML = '';
+    paginationControls.innerHTML = '';
+    message.classList.add('d-none');
+    let allResults = [];
+
+    for (const keyword of keywords) {
+        const formData = new FormData();
+        formData.append('keyword', keyword);
+
+        try {
+            const scrapeRes = await fetch('/scrape', {
+                method: 'POST',
+                body: formData
+            });
+
+            const scrapeText = await scrapeRes.text();
+
+            if (!scrapeRes.ok) {
+                console.error(`Scrape failed for ${keyword}:`, scrapeText);
+                continue;
+            }
+
+            const dataRes = await fetch('/data');
+            const dataJson = await dataRes.json();
+
+            if (dataJson.error) {
+                console.error(`Data error for ${keyword}:`, dataJson.error);
+                continue;
+            }
+
+            allResults = allResults.concat(dataJson.data);
+        } catch (err) {
+            console.error(`Error during scraping for ${keyword}:`, err);
+        }
+    }
+
+    data = allResults;
+    filteredData = data;
+    createPagination();
+    showPage(currentPage);
+
+    message.className = "alert alert-success mt-3";
+    message.textContent = "Automatic scraping and results loaded successfully!";
+    message.classList.remove('d-none');
+    spinner.style.display = 'none';
+};
+
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     spinner.style.display = 'inline-block';
@@ -130,19 +181,15 @@ function showPage(page) {
         tableBody.appendChild(tr);
     });
 
-    // Attach event listeners to download links
     document.querySelectorAll('.download-link').forEach(link => {
         link.addEventListener('click', function(event) {
             event.preventDefault();
             console.log("Download link clicked");
 
-            // Simulate file processing or any other task before showing the popup
             setTimeout(function() {
-                openAiPopup();  // Open the popup after a 5-second delay
-
-                // After opening the popup, navigate to the download link
-                window.open(event.target.href, '_blank');  // Open the download link in a new tab
-            }, 5000); // 5000 milliseconds = 5 seconds
+                openAiPopup();
+                window.open(event.target.href, '_blank');
+            }, 5000);
         });
     });
 }
@@ -183,27 +230,21 @@ globalSearchInput.addEventListener('input', () => {
     showPage(currentPage);
 });
 
-// Function to open the AI popup after a delay
 function openAiPopup() {
     const aiPopup = document.getElementById("ai-agent-popup");
     const statusMessage = document.getElementById("status-message");
     const queryFormPopup = document.getElementById("query-form-popup");
 
-    // Ensure the popup is displayed
-    aiPopup.style.display = "block"; // Popup is visible
-
-    // Update status message and show the question form
+    aiPopup.style.display = "block";
     statusMessage.innerText = "File has been processed. You can now ask questions.";
-    queryFormPopup.style.display = "block";  // Show the question form
+    queryFormPopup.style.display = "block";
 }
 
-// Handle question submission
 document.getElementById("query-form-popup").addEventListener("submit", function(event) {
     event.preventDefault();
-    
+
     const question = document.getElementById("question_popup").value;
 
-    // Send the question to the backend for processing
     fetch('/ask_question', {
         method: 'POST',
         headers: {
@@ -224,7 +265,6 @@ document.getElementById("query-form-popup").addEventListener("submit", function(
     });
 });
 
-// Close the popup
 document.getElementById("close-ai-popup").addEventListener("click", function() {
     document.getElementById("ai-agent-popup").style.display = "none";
 });

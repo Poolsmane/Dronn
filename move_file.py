@@ -63,7 +63,8 @@ def run_task():
     try:
         while True:
             time.sleep(1)
-    except KeyboardInterrupt:
+    except KeyboardInterrupt as e:
+        print(e)
         observer.stop()
     observer.join()
 

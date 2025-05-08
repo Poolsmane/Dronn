@@ -38,7 +38,7 @@ profile.set_preference("pdfjs.disabled", True)
 firefox_options = Options()
 firefox_options.add_argument("--start-maximized")
 firefox_options.profile = profile
-firefox_options.add_argument("--headless") 
+# firefox_options.add_argument("--headless") 
 service = Service(GECKODRIVER_PATH)
 driver = webdriver.Firefox(service=service, options=firefox_options)
 

@@ -15,7 +15,9 @@ import threading
 app = Flask(__name__)
 DOWNLOAD_FOLDER = os.getcwd()
 import move_file
+import rag_agent
 from move_file import run_task
+from rag_agent import monitor_and_run_rag
 from rag_agent import process_with_rag_agent 
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -49,24 +51,26 @@ def ask_question():
     try:
         # Call the RAG processing function with question and context
         answer = process_with_rag_agent(question)
+        print("success")
         return jsonify({"success": True, "answer": answer})
     except Exception as e:
+        print(e)
         return jsonify({"success": False, "error": str(e)}), 500
 
 
 
-@app.route('/query', methods=['POST'])
-def query_document():
-    question = request.form.get('question')
-    file_text = session.get('file_text')
+# @app.route('/query', methods=['POST'])
+# def query_document():
+#     question = request.form.get('question')
+#     file_text = session.get('file_text')
 
-    if not file_text:
-        return jsonify({"error": "No file processed yet."}), 400
+#     if not file_text:
+#         return jsonify({"error": "No file processed yet."}), 400
 
-    # Process the question (replace this with your AI logic)
-    answer = process_question(file_text, question)
+#     # Process the question (replace this with your AI logic)
+#     answer = process_question(file_text, question)
 
-    return jsonify({"answer": answer})
+#     return jsonify({"answer": answer})
 
 @app.route('/scrape', methods=['POST'])
 def scrape():
@@ -76,12 +80,14 @@ def scrape():
     try:
         result = subprocess.run(['python3', 'scrap.py', keyword], check=True, capture_output=True, text=True)
     except subprocess.CalledProcessError as e:
+        print(e)
         return f"Scraper error: {e.stderr}", 500
 
     # 2. Run remove.py immediately after
     try:
         filter_result = subprocess.run(['python3', 'remove_rows.py'], check=True, capture_output=True, text=True)
     except subprocess.CalledProcessError as e:
+        print(e)
         return f"Filter error: {e.stderr}", 500
 
     # 3. Wait a bit to ensure file write completion (optional but helps on some systems)
@@ -98,6 +104,7 @@ def data():
         df.fillna("Not Available", inplace=True)
         return jsonify({"data": df.to_dict(orient="records")})
     except Exception as e:
+        print(e)
         return jsonify({"error": str(e)}), 500
 
 @app.route('/download/<filename>')
@@ -105,6 +112,7 @@ def download_file(filename):
     try:
         return send_from_directory(DOWNLOAD_FOLDER, filename, as_attachment=True)
     except FileNotFoundError:
+        print("Error")
         return "File not found", 404
 
 ALL_TEXT_CACHE = ""  # optional: to speed things up
@@ -116,6 +124,9 @@ ALL_TEXT_CACHE = ""  # optional: to speed things up
 if __name__ == '__main__':
     thread=threading.Thread(target=move_file.run_task)
     thread.daemon=True
+    thread1=threading.Thread(target=monitor_and_run_rag)
+    thread1.daemon=True
     thread.start()
+    thread1.start()
     app.run(host='0.0.0.0', port=8080, debug=True)
     
