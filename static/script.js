@@ -45,21 +45,21 @@ window.onload = async function () {
             }
 
             await new Promise(resolve => setTimeout(resolve, 3000)); // 3 seconds       
-            const dataRes = await fetch('/data');
-            const dataJson = await dataRes.json();
+            
 
-            if (dataJson.error) {
-                console.error(`Data error for ${keyword}:`, dataJson.error);
-                continue;
-            }
+            // if (dataJson.error) {
+            //     console.error(`Data error for ${keyword}:`, dataJson.error);
+            //     continue;
+            // }
 
-            allResults = allResults.concat(dataJson.data);
+            // allResults = allResults.concat(dataJson.data);
         } catch (err) {
             console.error(`Error during scraping for ${keyword}:`, err);
         }
     }
-
-    data = allResults;
+    const dataRes = await fetch('/data');
+    const dataJson = await dataRes.json();
+    data = dataJson.data;
     filteredData = data;
     createPagination();
     showPage(currentPage);

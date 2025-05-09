@@ -668,7 +668,7 @@ function getServiceOptions(){
                                                 <tr>
                             <td rowspan="1">Product Information</td>
                                                                     <td style="font-weight:bold;">Film Size (inch)</td>
-                                         <td>8 x 10 inch </td>                                 <tr>
+                                         <td>10 x 12 inch </td>                                 <tr>
                                                             </tr>
                                                 <tr>
                             <td rowspan="2">Shelf Life</td>
@@ -940,7 +940,7 @@ function getServiceOptions(){
 
 <!--FOOTER ENDS--> 
 <input type="hidden" id="cname" value="csrf_bd_gem_nk" >
-<input type="hidden" id="chash" value="7fceb3ee8e60064b5a7f4444e66e5479" >
+<input type="hidden" id="chash" value="3a9e7851886b7409da9fd0ce71d8664f" >
 
 <!--GeM Loader -->
 <div class="backgroundLoder" style="display:none"></div>
@@ -1114,7 +1114,7 @@ function getServiceOptions(){
             var loadbased_required = $('input[name="loadbased_required"]:checked').val();
             var loadbased_reason = $(".loadbased_reason").val().trim();
             var bd_id = $("#bd_id").val();
-            var post_array = {"load_bid_file":load_bid_file,"bd_id":bd_id,"loadbased_required":loadbased_required,"loadbased_reason":loadbased_reason,'csrf_bd_gem_nk': '7fceb3ee8e60064b5a7f4444e66e5479'};
+            var post_array = {"load_bid_file":load_bid_file,"bd_id":bd_id,"loadbased_required":loadbased_required,"loadbased_reason":loadbased_reason,'csrf_bd_gem_nk': '3a9e7851886b7409da9fd0ce71d8664f'};
             $.ajax({
                 url: "https://bidplus.gem.gov.in/bidding/updateLoadData/",
                 async: false,
@@ -1141,7 +1141,7 @@ function getServiceOptions(){
         var fd = new FormData();
         fd.append("loadbased_file", document.getElementById("loadbased_file").files[0]);
         fd.append('bid_id', bidID);
-        fd.append('csrf_bd_gem_nk', '7fceb3ee8e60064b5a7f4444e66e5479');
+        fd.append('csrf_bd_gem_nk', '3a9e7851886b7409da9fd0ce71d8664f');
         var saveLoadDocUrl = "https://bidplus.gem.gov.in/bidding/buyerbid/saveLoadDoc/";
         var load_bid_file = '';
         $.ajax({
@@ -1309,7 +1309,7 @@ function getServiceOptions(){
                     form_data.append('bidID', bidID);
                     form_data.append('token', token);
                     form_data.append('load_bid_file', load_bid_file);
-                    form_data.append('csrf_bd_gem_nk', '7fceb3ee8e60064b5a7f4444e66e5479');
+                    form_data.append('csrf_bd_gem_nk', '3a9e7851886b7409da9fd0ce71d8664f');
                     form_data.append('save_all_boq', 1);
                     $.ajax({
                         url: saveUrl,
@@ -1336,7 +1336,7 @@ function getServiceOptions(){
                         url: saveUrl,
                         async: false,
                         type: "POST",
-                        data: $('#form_att').serialize() + "&load_bid_file=" + load_bid_file+ "&bid_type=" + btype + "&variantID=" + variantID + "&itemID=" + itemID + "&detailID=" + detailID + "&token=" + token + "&csrf_bd_gem_nk=7fceb3ee8e60064b5a7f4444e66e5479&minimum_rate="+minimum_rate+"&buyer_boq_file="+file_boq,
+                        data: $('#form_att').serialize() + "&load_bid_file=" + load_bid_file+ "&bid_type=" + btype + "&variantID=" + variantID + "&itemID=" + itemID + "&detailID=" + detailID + "&token=" + token + "&csrf_bd_gem_nk=3a9e7851886b7409da9fd0ce71d8664f&minimum_rate="+minimum_rate+"&buyer_boq_file="+file_boq,
                         dataType: "html",
                         success: function (data) {
                             if (data)
@@ -1366,7 +1366,7 @@ function getServiceOptions(){
             url: "https://bidplus.gem.gov.in/bidding/step1_save/",
             async: false,
             type: "POST",
-            data: "bidID=" + bidID + "&bid_type=" + bid_type + "&csrf_bd_gem_nk=7fceb3ee8e60064b5a7f4444e66e5479", //$('#form_contract').serialize() + "&
+            data: "bidID=" + bidID + "&bid_type=" + bid_type + "&csrf_bd_gem_nk=3a9e7851886b7409da9fd0ce71d8664f", //$('#form_contract').serialize() + "&
             dataType: "html",
             success: function (data) {
                 if (data)
@@ -1407,7 +1407,7 @@ function getServiceOptions(){
                     var form_data = new FormData();
                     form_data.append('bid_type', 0);
                     form_data.append('bidID', bidID);
-                    form_data.append('csrf_bd_gem_nk', '7fceb3ee8e60064b5a7f4444e66e5479');
+                    form_data.append('csrf_bd_gem_nk', '3a9e7851886b7409da9fd0ce71d8664f');
                     form_data.append('save_all_boq', 1);
                     showLoader();
                     $.ajax({
@@ -1483,7 +1483,7 @@ function getServiceOptions(){
                 url: "https://bidplus.gem.gov.in/bidding/bid/setLanguageCookie/",
                 async: false,
                 type: "POST",
-                data: "value=" + lang_value + "&text=" + lang_text + "&csrf_bd_gem_nk=" + '7fceb3ee8e60064b5a7f4444e66e5479',
+                data: "value=" + lang_value + "&text=" + lang_text + "&csrf_bd_gem_nk=" + '3a9e7851886b7409da9fd0ce71d8664f',
                 dataType: "json",
                 success: function (data) {
                     location.reload();
@@ -1612,7 +1612,7 @@ function getServiceOptions(){
                 url: "https://bidplus.gem.gov.in/bidding/showSpecs/",
                 async: false,
                 type: "POST",
-                data: "csrf_bd_gem_nk=7fceb3ee8e60064b5a7f4444e66e5479&variantID=" + variantID + "&itemID=" + itemID + "&btype=" + btype + "&token=" + token + "&bdid=" + bdid,
+                data: "csrf_bd_gem_nk=3a9e7851886b7409da9fd0ce71d8664f&variantID=" + variantID + "&itemID=" + itemID + "&btype=" + btype + "&token=" + token + "&bdid=" + bdid,
                 dataType: "html",
                 success: function (data) {                    
                     $('.hiddSpecs').hide();
