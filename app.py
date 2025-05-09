@@ -19,6 +19,21 @@ import rag_agent
 from move_file import run_task
 from rag_agent import monitor_and_run_rag
 from rag_agent import process_with_rag_agent 
+import csv
+
+file_path = 'filtered_bid_results.csv'  # Replace with your actual file path
+
+# Step 1: Read the header (column names)
+with open(file_path, mode='r', newline='', encoding='utf-8') as infile:
+    reader = csv.reader(infile)
+    headers = next(reader)  # Get the first row (header)
+
+# Step 2: Write only the header back to the file (clear the rest)
+with open(file_path, mode='w', newline='', encoding='utf-8') as outfile:
+    writer = csv.writer(outfile)
+    writer.writerow(headers)
+
+print(f"Cleared all data from {file_path}, header preserved.")
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 embedder = SentenceTransformer('all-MiniLM-L6-v2')

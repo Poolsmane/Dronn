@@ -44,6 +44,7 @@ window.onload = async function () {
                 continue;
             }
 
+            await new Promise(resolve => setTimeout(resolve, 3000)); // 3 seconds       
             const dataRes = await fetch('/data');
             const dataJson = await dataRes.json();
 

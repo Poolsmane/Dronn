@@ -105,7 +105,17 @@ try:
 
     search_button = driver.find_element(By.ID, "searchBidRA")
     search_button.click()
-    time.sleep(1)
+    WebDriverWait(driver, 10).until(
+    EC.invisibility_of_element_located((By.XPATH, "//div[contains(@class, 'card')]"))
+)
+    WebDriverWait(driver, 10).until(
+    EC.presence_of_all_elements_located((By.XPATH, "//div[contains(@class, 'card')]"))
+)
+    # time.sleep(1)
+#     WebDriverWait(driver, 10).until(
+#     EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card')]"))
+# )
+
 
     scraped_data = []
 
@@ -155,7 +165,11 @@ try:
                 break
             else:
                 next_button.click()
-                time.sleep(1)
+                # time.sleep(1)
+                WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card')]"))
+)
+
         except:
             print("Next button not found. Assuming last page. Exiting...")
             break
