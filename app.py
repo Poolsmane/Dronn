@@ -7,7 +7,8 @@ from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
 import subprocess
-from flask import Flask, render_template, request, jsonify, send_from_directory,session
+from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask_cors import CORS
 import pandas as pd
 import subprocess
 import time
@@ -20,7 +21,7 @@ from move_file import run_task
 from rag_agent import monitor_and_run_rag
 from rag_agent import process_with_rag_agent 
 import csv
-
+CORS(app)
 file_path = 'filtered_bid_results.csv'  # Replace with your actual file path
 
 # Step 1: Read the header (column names)
@@ -73,20 +74,6 @@ def ask_question():
         return jsonify({"success": False, "error": str(e)}), 500
 
 
-
-# @app.route('/query', methods=['POST'])
-# def query_document():
-#     question = request.form.get('question')
-#     file_text = session.get('file_text')
-
-#     if not file_text:
-#         return jsonify({"error": "No file processed yet."}), 400
-
-#     # Process the question (replace this with your AI logic)
-#     answer = process_question(file_text, question)
-
-#     return jsonify({"answer": answer})
-
 @app.route('/scrape', methods=['POST'])
 def scrape():
     keyword = request.form.get('keyword')
@@ -134,14 +121,21 @@ ALL_TEXT_CACHE = ""  # optional: to speed things up
  # Track whether a file has been successfully processed
 
 
-
+def safe_thread(target_func):
+    def wrapper():
+        try:
+            target_func()
+        except Exception as e:
+            print(f"Exception in thread {target_func.__name__}: {e}")
+    return wrapper
 
 if __name__ == '__main__':
-    thread=threading.Thread(target=move_file.run_task)
-    thread.daemon=True
-    thread1=threading.Thread(target=monitor_and_run_rag)
-    thread1.daemon=True
+    thread = threading.Thread(target=safe_thread(move_file.run_task))
+    # thread.daemon = True
+    thread1 = threading.Thread(target=safe_thread(monitor_and_run_rag))
+    # thread1.daemon = True
     thread.start()
     thread1.start()
     app.run(host='0.0.0.0', port=8080, debug=True)
+    print("Flask App exitec")
     

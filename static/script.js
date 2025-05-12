@@ -20,7 +20,9 @@ let rowsPerPage = parseInt(rowsPerPageSelect.value);
 
 // Automatically run scraping for keywords on page load
 window.onload = async function () {
-    const keywords = ['lms', 'blockchain', 'web development'];
+    // const keywords = ['Semi Conductor','Hiring for IT Professionals','Learning Management system','Software development','Hiring for IT Manpower','Mobile application'];
+    const keywords = ['Hiring for IT Manpower','Mobile application'];
+
     spinner.style.display = 'inline-block';
     tableBody.innerHTML = '';
     paginationControls.innerHTML = '';
@@ -127,8 +129,14 @@ function applyFilters() {
         }
 
         if (filters.bidNumber && !row["Bid Number"].toString().toLowerCase().includes(filters.bidNumber.toLowerCase())) return false;
-        if (filters.items && !row["Items"].toString().toLowerCase().includes(filters.items.toLowerCase())) return false;
-
+        // if (filters.items && !row["Items"].toString().toLowerCase().includes(filters.items.toLowerCase())) return false;
+        if (filters.items) {
+            const itemKeywords = filters.items.toLowerCase().split(/\s+/);
+            const itemContent = row["Items"].toString().toLowerCase();
+            const matchesItem = itemKeywords.some(keyword => itemContent.includes(keyword));
+            if (!matchesItem) return false;
+        }
+        
         if (filters.quantityCondition) {
             const quantity = row["Quantity"];
             const [operator, value] = filters.quantityCondition.split(/([<>]=?)/).filter(Boolean);
@@ -148,17 +156,55 @@ function applyFilters() {
     return filteredData;
 }
 
+let curr = 1;
+let currentWindowStart = 1;
+const windowSize = 10;
+
 function createPagination() {
     const totalPages = Math.ceil(data.length / rowsPerPage);
     paginationControls.innerHTML = '';
-    for (let i = 1; i <= totalPages; i++) {
+
+    const windowEnd = Math.min(currentWindowStart + windowSize - 1, totalPages);
+
+    // Add Prev button if applicable
+    if (totalPages > 20 && currentWindowStart > 1) {
+        const prevLi = document.createElement('li');
+        prevLi.classList.add('page-item');
+        prevLi.innerHTML = `<a class="page-link" href="#">Prev</a>`;
+        prevLi.addEventListener('click', () => {
+            currentWindowStart = Math.max(currentWindowStart - windowSize, 1);
+            createPagination();
+        });
+        paginationControls.appendChild(prevLi);
+    }
+
+    // Add page number buttons
+    for (let i = currentWindowStart; i <= windowEnd; i++) {
         const li = document.createElement('li');
         li.classList.add('page-item');
+        if (i === curr) li.classList.add('active');
         li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-        li.addEventListener('click', () => showPage(i));
+        li.addEventListener('click', () => {
+            curr = i;
+            showPage(i);
+            createPagination();
+        });
         paginationControls.appendChild(li);
     }
+
+    // Add Next button if applicable
+    if (totalPages > 20 && windowEnd < totalPages) {
+        const nextLi = document.createElement('li');
+        nextLi.classList.add('page-item');
+        nextLi.innerHTML = `<a class="page-link" href="#">Next</a>`;
+        nextLi.addEventListener('click', () => {
+            currentWindowStart = currentWindowStart + windowSize;
+            createPagination();
+        });
+        paginationControls.appendChild(nextLi);
+    }
 }
+
 
 function showPage(page) {
     currentPage = page;
@@ -199,6 +245,17 @@ document.getElementById('quantity-filter').addEventListener('input', (e) => {
     filters.quantityCondition = e.target.value;
     showPage(currentPage);
 });
+document.getElementById('items-filter').addEventListener('input', (e) => {
+    filters.items = e.target.value;
+    showPage(currentPage);
+});
+document.getElementById('bids-filter').addEventListener('input', (e) => {
+    filters.bidNumber = e.target.value;
+    showPage(currentPage);
+});document.getElementById('department-filter').addEventListener('input', (e) => {
+    filters.department = e.target.value;
+    showPage(currentPage);
+});
 
 document.querySelectorAll('#results-table thead input').forEach(input => {
     input.addEventListener('input', () => {
@@ -228,6 +285,7 @@ rowsPerPageSelect.addEventListener('change', (e) => {
 globalSearchInput.addEventListener('input', () => {
     currentPage = 1;
     createPagination();
+    applyFilters()
     showPage(currentPage);
 });
 

@@ -11,7 +11,8 @@ import numpy as np
 from pdfminer.pdfparser import PDFSyntaxError
 import pytesseract
 from pdf2image import convert_from_path
-
+from fpdf import FPDF
+import re
 # Initialize SentenceTransformer model
 embedder = SentenceTransformer('all-MiniLM-L6-v2')
 all_text_final=""
@@ -94,7 +95,7 @@ def download_linked_files(links, download_dir):
     return downloaded_files
 
 # Function to find relevant chunks based on the query
-def find_relevant_chunks(text, query, chunk_size=500, overlap=200, top_k=3):
+def find_relevant_chunks(text, query, chunk_size=800, overlap=250, top_k=6):
     try:
         # Preprocess: Remove excessive whitespace
         text = ' '.join(text.split())
@@ -142,22 +143,6 @@ def ask_ollama(prompt, model="deepseek-r1"):
         print(e)
         return f"❌ Error while communicating with Ollama: {str(e)}"
 
-# Function to send a question to the API for an answer
-def ask_question_via_api(question, context):
-    api_url = "http://192.168.0.85:8080/ask_question"  # Replace with actual API URL
-    payload = {
-        "question": question,
-        "context": context
-    }
-    try:
-        response = requests.post(api_url, json=payload)
-        if response.status_code == 200:
-            return response.json().get("answer", "❌ No answer found.")
-        else:
-            return f"❌ Error: Unable to get answer from API. Status code: {response.status_code}"
-    except Exception as e:
-        print(e)
-        return f"❌ Error while making API request: {str(e)}"
 
 # Function to monitor latest_moved_file.txt and restart RAG agent if it changes
 
@@ -234,6 +219,7 @@ def monitor_and_run_rag(poll_interval=3):
 
 def process_with_rag_agent(question):
     global all_text_final
+    
     print(f"all text is:{all_text_final}")
     try:
         chunks = find_relevant_chunks(all_text_final,question)
@@ -241,8 +227,14 @@ def process_with_rag_agent(question):
             return chunks
 
         context = "\n\n".join(chunks)
-        prompt = f"Based on the following document context, answer the question accurately in points:\n\n{context}\n\nQuestion: {question}"
-        return ask_ollama(prompt)  # Or use ask_question_via_api(question, context)
+        prompt = (
+    f"Answer the question strictly based on the provided context. "
+    f"Keep your answer short, specific, and include all relevant numbers, dates, names, and measurable details from the context. "
+    f"If the answer is not clearly in the context, respond with 'Not found in the document.'\n\n"
+    f"Context:\n{context}\n\n"
+    f"Question: {question}"
+)
+        return ask_ollama(prompt)
     except Exception as e:
         print(e)
         return f"❌ Error in process_with_rag_agent: {str(e)}"
