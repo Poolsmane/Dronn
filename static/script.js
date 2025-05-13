@@ -21,7 +21,7 @@ let rowsPerPage = parseInt(rowsPerPageSelect.value);
 // Automatically run scraping for keywords on page load
 window.onload = async function () {
     // const keywords = ['Semi Conductor','Hiring for IT Professionals','Learning Management system','Software development','Hiring for IT Manpower','Mobile application'];
-    const keywords = ['Hiring for IT Manpower','Mobile application'];
+    const keywords = ['Mobile application'];
 
     spinner.style.display = 'inline-block';
     tableBody.innerHTML = '';

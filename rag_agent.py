@@ -13,6 +13,7 @@ import pytesseract
 from pdf2image import convert_from_path
 from fpdf import FPDF
 import re
+
 # Initialize SentenceTransformer model
 embedder = SentenceTransformer('all-MiniLM-L6-v2')
 all_text_final=""
@@ -95,7 +96,7 @@ def download_linked_files(links, download_dir):
     return downloaded_files
 
 # Function to find relevant chunks based on the query
-def find_relevant_chunks(text, query, chunk_size=800, overlap=250, top_k=6):
+def find_relevant_chunks(text, query, chunk_size=800, overlap=350, top_k=5):
     try:
         # Preprocess: Remove excessive whitespace
         text = ' '.join(text.split())
@@ -146,10 +147,11 @@ def ask_ollama(prompt, model="deepseek-r1"):
 
 # Function to monitor latest_moved_file.txt and restart RAG agent if it changes
 
+import threading
+
+# Function to monitor file path changes and return a flag indicating the change
 def monitor_and_run_rag(poll_interval=3):
     last_pdf_path = None
-    last_all_text = None
-    global all_text_final
     while True:
         if not os.path.exists("latest_moved_path.txt"):
             print("⚠️ latest_moved_path.txt not found. Waiting...")
@@ -161,75 +163,59 @@ def monitor_and_run_rag(poll_interval=3):
 
         if current_pdf_path != last_pdf_path:
             print(f"\n🔄 Detected new file: {current_pdf_path}")
-            if not os.path.exists(current_pdf_path):
-                print(f"❌ File not found: {current_pdf_path}")
-                time.sleep(poll_interval)
-                continue
+            last_pdf_path = current_pdf_path
+            # Trigger the file processing and link downloading
+            threading.Thread(target=handle_pdf_and_links, args=(current_pdf_path,)).start()
 
-            try:
-                text, links = extract_text_and_links(current_pdf_path)
-                print(f"🔍 Extracted main PDF text length: {len(text)}")
-                print(f"✅ Raw extracted text (first 500 chars): {text[:500]}")
-                all_text = text
+        time.sleep(poll_interval)
 
-                if links:
-                    downloaded_files = download_linked_files(links, download_dir="linked_pdfs")
-                    for fpath in downloaded_files:
-                        if fpath.endswith(".pdf") and os.path.exists(fpath):
-                            file_text, _ = extract_text_and_links(fpath)
-                            print(f"📄 Extracted linked file {fpath} text length: {len(file_text)}")
-                            all_text += "\n" + file_text
-                else:
-                    print("ℹ️ No links found in main PDF.")
+# New function to handle PDF processing, link downloading, and text aggregation
+def handle_pdf_and_links(current_pdf_path):
+    global all_text_final
+    try:
+        # Extract text from main PDF and links
+        text, links = extract_text_and_links(current_pdf_path)
+        print(f"🔍 Extracted main PDF text length: {len(text)}")
+        print(f"✅ Raw extracted text (first 500 chars): {text[:500]}")
+        all_text = text
 
-                if not all_text.strip():
-                    print("⚠️ No valid content found in new PDF. Skipping...")
-                    time.sleep(poll_interval)
-                    continue
+        # If there are links in the PDF, download the files linked in the PDF
+        if links:
+            print(f"ℹ️ Found {len(links)} links in the PDF.")
+            downloaded_files = download_linked_files(links, download_dir="linked_pdfs")
+            for fpath in downloaded_files:
+                if fpath.endswith(".pdf") and os.path.exists(fpath):
+                    file_text, _ = extract_text_and_links(fpath)
+                    print(f"📄 Extracted linked file {fpath} text length: {len(file_text)}")
+                    all_text += "\n" + file_text
+        else:
+            print("ℹ️ No links found in main PDF.")
 
-                # Update last seen state
-                last_pdf_path = current_pdf_path
-                last_all_text = all_text
-                print("\n✅ Ready to answer questions from the new document.")
+        # If no valid content found in the PDF, return None
+        if not all_text.strip():
+            print("⚠️ No valid content found in new PDF. Skipping...")
+            return None
 
-            except Exception as e:
-                print(f"❌ Error processing PDF: {e}")
-                time.sleep(poll_interval)
-                continue
+        print("\n✅ Ready to answer questions from the new document.")
+        all_text_final = all_text
 
-        # If last_all_text is ready, start Q&A
-        if last_all_text:
-            # print("\n🧠 You can now ask questions. Type 'exit' to stop.")
-            while True:
-               
-                # Check if file changed mid-session
-                with open("latest_moved_path.txt", "r") as f:
-                    check_pdf_path = f.read().strip()
-                if check_pdf_path != last_pdf_path:
-                    print("\n⚠️ File changed during conversation. Restarting session...")
-                    break
+    except Exception as e:
+        print(f"❌ Error processing PDF: {e}")
 
 
-                try:
-                    all_text_final=last_all_text
-
-                except Exception as e:
-                    print(f"❌ Error answering question: {e}")
-
-
+# Modify process_with_rag_agent to use the new function
 def process_with_rag_agent(question):
     global all_text_final
-    
+
     print(f"all text is:{all_text_final}")
     try:
-        chunks = find_relevant_chunks(all_text_final,question)
+        chunks = find_relevant_chunks(all_text_final, question)
         if isinstance(chunks, str) and chunks.startswith("❌"):
             return chunks
 
         context = "\n\n".join(chunks)
         prompt = (
-    f"Answer the question strictly based on the provided context. "
-    f"Keep your answer short, specific, and include all relevant numbers, dates, names, and measurable details from the context. "
+    f"Give me a precise nswer with values from the documents."
     f"If the answer is not clearly in the context, respond with 'Not found in the document.'\n\n"
     f"Context:\n{context}\n\n"
     f"Question: {question}"
@@ -238,7 +224,6 @@ def process_with_rag_agent(question):
     except Exception as e:
         print(e)
         return f"❌ Error in process_with_rag_agent: {str(e)}"
-
 
 
 # Run the dynamic watcher if script is executed
