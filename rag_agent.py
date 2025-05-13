@@ -26,6 +26,8 @@ def extract_text_and_links(pdf_path):
         with pdfplumber.open(pdf_path) as pdf:
             for i, page in enumerate(pdf.pages):
                 print(f"📄 Reading page {i + 1}/{len(pdf.pages)}")
+                
+                # Step 1: Extract regular text
                 page_text = page.extract_text()
                 if page_text:
                     text_content += page_text + "\n"
@@ -35,8 +37,16 @@ def extract_text_and_links(pdf_path):
                     custom_oem_psm_config = r'--oem 3 --psm 6'
                     ocr_text = pytesseract.image_to_string(image, config=custom_oem_psm_config)
                     text_content += ocr_text + "\n"
+                
+                # Step 2: Extract structured tables
+                tables = page.extract_tables()
+                for table in tables:
+                    text_content += "\n[Table]\n"
+                    for row in table:
+                        row_text = ' | '.join([cell.strip() if cell else '' for cell in row])
+                        text_content += row_text + "\n"
 
-                # Extract links robustly
+                # Step 3: Extract hyperlinks
                 try:
                     if page.annots:
                         for annot in page.annots:
@@ -44,7 +54,6 @@ def extract_text_and_links(pdf_path):
                             if uri and uri.startswith("http"):
                                 links.add(uri)
                 except Exception:
-                    # Fallback if annots don't exist
                     pass
 
     except Exception as e:
@@ -52,6 +61,8 @@ def extract_text_and_links(pdf_path):
         return "", []
 
     return text_content.strip(), list(links)
+
+
 
 
 # Function to generate filenames for linked files
