@@ -22,6 +22,18 @@ from rag_agent import monitor_and_run_rag
 from rag_agent import process_with_rag_agent 
 import csv
 CORS(app)
+file_path1 = '/home/kartikeyapatel/Videos/gem/latest_moved_path.txt'  # Replace with your actual text file path
+
+# Step 1: Read the first line (header or title)
+with open(file_path1, mode='r', encoding='utf-8') as infile:
+    first_line = infile.readline()
+
+# Step 2: Write only the first line back to the file (clear the rest)
+with open(file_path1, mode='w', encoding='utf-8') as outfile:
+    outfile.write(first_line)
+
+print(f"Cleared all data from {file_path1}, header preserved.")
+
 file_path = 'filtered_bid_results.csv'  # Replace with your actual file path
 
 # Step 1: Read the header (column names)

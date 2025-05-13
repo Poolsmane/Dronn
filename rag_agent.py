@@ -107,7 +107,7 @@ def download_linked_files(links, download_dir):
     return downloaded_files
 
 # Function to find relevant chunks based on the query
-def find_relevant_chunks(text, query, chunk_size=800, overlap=350, top_k=5):
+def find_relevant_chunks(text, query, chunk_size=1000, overlap=200, top_k=5):
     try:
         # Preprocess: Remove excessive whitespace
         text = ' '.join(text.split())

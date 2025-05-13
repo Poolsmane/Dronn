@@ -119,6 +119,20 @@ form.addEventListener('submit', async (e) => {
     }
 });
 
+// Helper to parse "DD-MM-YYYY hh:mm AM/PM" into a Date object
+function parseCustomDate(dateString) {
+    // Example input: "22-04-2025 12:31 PM"
+    const [datePart, timePart, meridian] = dateString.split(" ");
+    const [day, month, year] = datePart.split("-").map(Number);
+    let [hour, minute] = timePart.split(":").map(Number);
+
+    // Convert 12-hour time to 24-hour time
+    if (meridian === "PM" && hour !== 12) hour += 12;
+    if (meridian === "AM" && hour === 12) hour = 0;
+
+    return new Date(year, month - 1, day, hour, minute);
+}
+
 function applyFilters() {
     const globalSearch = globalSearchInput.value.trim().toLowerCase();
 
@@ -129,14 +143,14 @@ function applyFilters() {
         }
 
         if (filters.bidNumber && !row["Bid Number"].toString().toLowerCase().includes(filters.bidNumber.toLowerCase())) return false;
-        // if (filters.items && !row["Items"].toString().toLowerCase().includes(filters.items.toLowerCase())) return false;
+
         if (filters.items) {
             const itemKeywords = filters.items.toLowerCase().split(/\s+/);
             const itemContent = row["Items"].toString().toLowerCase();
             const matchesItem = itemKeywords.some(keyword => itemContent.includes(keyword));
             if (!matchesItem) return false;
         }
-        
+
         if (filters.quantityCondition) {
             const quantity = row["Quantity"];
             const [operator, value] = filters.quantityCondition.split(/([<>]=?)/).filter(Boolean);
@@ -147,14 +161,43 @@ function applyFilters() {
         }
 
         if (filters.department && !row["Department"].toString().toLowerCase().includes(filters.department.toLowerCase())) return false;
-        if (filters.startDate && new Date(row["Start Date"]) < new Date(filters.startDate)) return false;
-        if (filters.endDate && new Date(row["End Date"]) > new Date(filters.endDate)) return false;
+
+        const rowStartDate = parseCustomDate(row["Start Date"]);
+        const rowEndDate = parseCustomDate(row["End Date"]);
+
+        if (filters.startDate && !filters.endDate) {
+            const filterStart = new Date(filters.startDate);
+            if (rowStartDate < filterStart) return false;
+        }
+
+        if (!filters.startDate && filters.endDate) {
+            const filterEnd = new Date(filters.endDate);
+            if (rowEndDate > filterEnd) return false;
+        }
+
+        if (filters.startDate && filters.endDate) {
+            const filterStart = new Date(filters.startDate);
+            const filterEnd = new Date(filters.endDate);
+            if (rowStartDate < filterStart || rowEndDate > filterEnd) return false;
+        }
 
         return true;
     });
 
     return filteredData;
 }
+
+// Date input listeners
+document.getElementById('start-date').addEventListener('change', (e) => {
+    filters.startDate = e.target.value;
+    showPage(currentPage);
+});
+
+document.getElementById('end-date').addEventListener('change', (e) => {
+    filters.endDate = e.target.value;
+    showPage(currentPage);
+});
+
 
 let curr = 1;
 let currentWindowStart = 1;
