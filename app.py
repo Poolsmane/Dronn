@@ -19,18 +19,15 @@ import move_file
 import rag_agent
 from move_file import run_task
 from rag_agent import monitor_and_run_rag
-from rag_agent import process_with_rag_agent 
+from rag_agent import process_with_langchain_agent 
 import csv
 CORS(app)
 file_path1 = '/home/kartikeyapatel/Videos/gem/latest_moved_path.txt'  # Replace with your actual text file path
 
-# Step 1: Read the first line (header or title)
-with open(file_path1, mode='r', encoding='utf-8') as infile:
-    first_line = infile.readline()
+# Clear all contents of the file
+with open(file_path1, mode='w', encoding='utf-8'):
+    pass  # This will truncate the file to zero length
 
-# Step 2: Write only the first line back to the file (clear the rest)
-with open(file_path1, mode='w', encoding='utf-8') as outfile:
-    outfile.write(first_line)
 
 print(f"Cleared all data from {file_path1}, header preserved.")
 
@@ -55,7 +52,8 @@ from rag_agent import (
     extract_text_and_links,
     download_linked_files,
     find_relevant_chunks,
-    ask_ollama
+    handle_pdf_and_links,
+    # ask_ollama
 )
 
 
@@ -78,7 +76,7 @@ def ask_question():
 
     try:
         # Call the RAG processing function with question and context
-        answer = process_with_rag_agent(question)
+        answer = process_with_langchain_agent(question)
         print("success")
         return jsonify({"success": True, "answer": answer})
     except Exception as e:
