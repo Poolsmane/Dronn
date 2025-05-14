@@ -6,6 +6,7 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.docstore.document import Document
 from sentence_transformers import SentenceTransformer
 from langchain.chains import RetrievalQA
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 import fitz
 import time
 import string
@@ -50,18 +51,18 @@ def extract_text_and_links(pdf_path):
             # Extract links
             links.update([link.get('uri') for link in page.get_links() if 'uri' in link])
 
-            # ✅ Extract tables using pdfplumber
+            # ✅ Extract tables using pdfplumber (preserving tabular layout)
             try:
                 plumber_page = plumber_doc.pages[i]
                 tables = plumber_page.extract_tables()
                 for table in tables:
                     if table:
+                        text_content += "\n--- Table Start ---\n"
                         for row in table:
-                            if row and len(row) >= 2:
-                                key = row[0].strip() if row[0] else ""
-                                value = row[1].strip() if row[1] else ""
-                                if key and value:
-                                    text_content += f"{key}: {value}\n"
+                            if row:
+                                cleaned_row = [cell.strip() if cell else "" for cell in row]
+                                text_content += "\t".join(cleaned_row) + "\n"
+                        text_content += "--- Table End ---\n"
             except Exception as e:
                 print(f"⚠️ Table extraction failed on page {i + 1}: {e}")
 
@@ -70,7 +71,8 @@ def extract_text_and_links(pdf_path):
         return "", []
 
     return text_content.strip(), list(links)
-# ✅ Filename generator
+
+
 def generate_filenames(n):
     alphabet = string.ascii_lowercase
     result, i = [], 0
@@ -129,11 +131,18 @@ def handle_pdf_and_links(current_pdf_path):
 # ✅ Finds relevant chunks with FAISS
 def find_relevant_chunks(text, query, chunk_size=1000, overlap=200, top_k=5):
     try:
-        text = ' '.join(text.split())
         if not text.strip():
             return "❌ No text found after preprocessing."
-        chunks = [text[i:i + chunk_size] for i in range(0, len(text), chunk_size - overlap)]
+
+        splitter = RecursiveCharacterTextSplitter(
+            chunk_size=chunk_size,
+            chunk_overlap=overlap,
+            separators=["\n\n", "\n", ".", " ", "|"]  # add pipe as table column delimiter
+        )
+
+        chunks = splitter.split_text(text)
         docs = [Document(page_content=chunk) for chunk in chunks if len(chunk) > 50]
+
         vector_store = FAISS.from_documents(docs, embedding_model)
         return vector_store.similarity_search(query, top_k=top_k)
     except Exception as e:
