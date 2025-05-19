@@ -26,51 +26,32 @@ reader = Reader(lang_list=['en'])
 all_text_final = ""
 
 # ✅ Function to extract text and links from PDF using PyMuPDF (fitz)
+from unstructured.partition.pdf import partition_pdf
+
 def extract_text_and_links(pdf_path):
     text_content = ""
     links = set()
 
     try:
+        # Extract links using PyMuPDF as before (unchanged)
         doc = fitz.open(pdf_path)
-        plumber_doc = pdfplumber.open(pdf_path)
-
         for i in range(len(doc)):
             page = doc.load_page(i)
-            print(f"📄 Reading page {i + 1}/{len(doc)}")
-
-            # Extract regular text
-            page_text = page.get_text("text")
-            if page_text.strip():
-                text_content += page_text + "\n"
-            else:
-                print(f"⚠️ No text found on page {i + 1}, using OCR...")
-                image = page.get_pixmap()
-                ocr_text = reader.readtext(image.tobytes())
-                text_content += " ".join([t[1] for t in ocr_text]) + "\n"
-
-            # Extract links
             links.update([link.get('uri') for link in page.get_links() if 'uri' in link])
 
-            # ✅ Extract tables using pdfplumber (preserving tabular layout)
-            try:
-                plumber_page = plumber_doc.pages[i]
-                tables = plumber_page.extract_tables()
-                for table in tables:
-                    if table:
-                        text_content += "\n--- Table Start ---\n"
-                        for row in table:
-                            if row:
-                                cleaned_row = [cell.strip() if cell else "" for cell in row]
-                                text_content += "\t".join(cleaned_row) + "\n"
-                        text_content += "--- Table End ---\n"
-            except Exception as e:
-                print(f"⚠️ Table extraction failed on page {i + 1}: {e}")
+        # Extract text with unstructured.partition.pdf
+        elements = partition_pdf(filename=pdf_path)
+        for el in elements:
+            # el.text contains the textual content of the element
+            if el.text:
+                text_content += el.text + "\n"
 
     except Exception as e:
-        print(f"❌ Failed to read {pdf_path}: {e}")
+        print(f"❌ Failed to read {pdf_path} with unstructured: {e}")
         return "", []
 
     return text_content.strip(), list(links)
+
 
 
 def generate_filenames(n):
@@ -108,6 +89,49 @@ def download_linked_files(links, download_dir):
             print(f"❌ Error downloading {link}: {e}")
     return downloaded_files
 
+# ✅ Summarize extracted text and save to a file
+def summarize_and_save(full_text, output_file="summary.txt", chunk_size=3000, overlap=200):
+    if not full_text.strip():
+        print("⚠️ No text to summarize.")
+        return
+
+    try:
+        from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+        llm = OllamaLLM(model="deepseek-r1")
+
+        splitter = RecursiveCharacterTextSplitter(
+            chunk_size=chunk_size,
+            chunk_overlap=overlap,
+            separators=["\n\n", "\n", ".", " "]
+        )
+        chunks = splitter.split_text(full_text)
+        all_summaries = []
+
+        print(f"🧩 Splitting into {len(chunks)} chunks for summarization...")
+
+        for i, chunk in enumerate(chunks):
+            prompt = f"Summarize this part of a document:\n\n{chunk}\n\nSummary:"
+            partial_summary = llm.invoke(prompt)
+            all_summaries.append(f"--- Chunk {i+1} Summary ---\n{partial_summary}\n")
+
+        # Optional: summarize all summaries
+        combined_summary_prompt = "Summarize the following combined summaries into a cohesive document summary:\n\n" + "\n".join(all_summaries)
+        final_summary = llm.invoke(combined_summary_prompt)
+
+        with open(output_file, "w", encoding="utf-8") as f:
+            f.write("📌 FINAL SUMMARY\n\n")
+            f.write(final_summary.strip())
+            f.write("\n\n📄 DETAILED SECTION SUMMARIES\n\n")
+            f.write("\n".join(all_summaries))
+
+        print(f"✅ Detailed + Final summary saved to {output_file}")
+
+    except Exception as e:
+        print(f"❌ Error in smart_summarize_and_save: {e}")
+
+
+
 # ✅ Processes main + linked PDFs
 def handle_pdf_and_links(current_pdf_path):
     global all_text_final
@@ -123,13 +147,15 @@ def handle_pdf_and_links(current_pdf_path):
         if not all_text.strip():
             print("⚠️ No content found.")
             return
-        print("✅ Extracted content ready.")
+        
         all_text_final = all_text
+        summarize_and_save(all_text_final)
+        print("✅ Extracted content ready.")
     except Exception as e:
         print(f"❌ Error processing PDF: {e}")
 
 # ✅ Finds relevant chunks with FAISS
-def find_relevant_chunks(text, query, chunk_size=1000, overlap=200, top_k=5):
+def find_relevant_chunks(text, query, chunk_size=1300, overlap=140, top_k=5):
     try:
         if not text.strip():
             return "❌ No text found after preprocessing."

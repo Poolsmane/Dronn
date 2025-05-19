@@ -51,7 +51,7 @@ ALL_TEXT_CACHE = ""  # cache for all text to avoid re-processing
 from rag_agent import (
     extract_text_and_links,
     download_linked_files,
-    find_relevant_chunks,
+    # find_relevant_chunks,
     handle_pdf_and_links,
     # ask_ollama
 )
@@ -65,6 +65,7 @@ def index():
 
 @app.route('/ask_question', methods=['POST'])
 def ask_question():
+    bid="GEM/2025/B/6055240"
     data = request.get_json()
     question = data.get("question")
     # context = data.get("context")
