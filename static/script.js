@@ -266,7 +266,7 @@ function showPage(page) {
             <td>${row["Department"]}</td>
             <td>${row["Start Date"]}</td>
             <td>${row["End Date"]}</td>
-            <td><a href="${row["Downloadable File URL"]}" target="_blank" class="btn btn-sm btn-outline-primary download-link">Download</a></td>
+            <td><a href="${row["Downloadable File URL"]}" class="btn btn-sm btn-outline-primary download-link">Ask Agent</a></td>
         `;
         tableBody.appendChild(tr);
     });
@@ -275,13 +275,19 @@ function showPage(page) {
         link.addEventListener('click', function(event) {
             event.preventDefault();
             console.log("Download link clicked");
-
+    
             setTimeout(function() {
                 openAiPopup();
-                window.open(event.target.href, '_blank');
+                const a = document.createElement('a');
+                a.href = event.target.href;
+                a.setAttribute('download', ''); // This hints the browser to download
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
             }, 5000);
         });
     });
+    
 }
 
 document.getElementById('quantity-filter').addEventListener('input', (e) => {

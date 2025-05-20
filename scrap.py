@@ -9,11 +9,12 @@ from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
 # ====== SETTINGS ======
+
 GECKODRIVER_PATH = '/usr/local/bin/geckodriver'
 import sys
-
+options = Options()
+options.headless = True 
 SEARCH_KEYWORD = sys.argv[1] if len(sys.argv) > 1 else ''
 
 if not SEARCH_KEYWORD.strip():
