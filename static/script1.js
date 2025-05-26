@@ -42,65 +42,65 @@ function readTextFile() {
   // Call initially and then every 2 seconds
   readTextFile();
   setInterval(readTextFile, 2000);
-// form.addEventListener('submit', async (e) => {
-//     e.preventDefault();
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-//     const keyword = document.getElementById('keyword').value.trim();
-//     if (!keyword) {
-//         message.className = "alert alert-warning mt-3";
-//         message.textContent = "Please enter a keyword to scrape.";
-//         message.classList.remove('d-none');
-//         return;
-//     }
+    const keyword = document.getElementById('keyword').value.trim();
+    if (!keyword) {
+        message.className = "alert alert-warning mt-3";
+        message.textContent = "Please enter a keyword to scrape.";
+        message.classList.remove('d-none');
+        return;
+    }
 
-//     spinner.style.display = 'inline-block';
-//     message.classList.add('d-none');
-//     tableBody.innerHTML = '';
-//     paginationControls.innerHTML = '';
+    spinner.style.display = 'inline-block';
+    message.classList.add('d-none');
+    tableBody.innerHTML = '';
+    paginationControls.innerHTML = '';
 
-//     const formData = new FormData();
-//     formData.append('keyword', keyword);
+    const formData = new FormData();
+    formData.append('keyword', keyword);
 
-//     try {
-//         const scrapeRes = await fetch('/scrape', {
-//             method: 'POST',
-//             body: formData
-//         });
+    try {
+        const scrapeRes = await fetch('/scrape', {
+            method: 'POST',
+            body: formData
+        });
 
-//         const scrapeText = await scrapeRes.text();
+        const scrapeText = await scrapeRes.text();
 
-//         if (!scrapeRes.ok) {
-//             throw new Error(scrapeText || 'Scraping failed');
-//         }
+        if (!scrapeRes.ok) {
+            throw new Error(scrapeText || 'Scraping failed');
+        }
 
-//         await new Promise(resolve => setTimeout(resolve, 1500)); // Wait for backend to process
+        await new Promise(resolve => setTimeout(resolve, 1500)); // Wait for backend to process
 
-//         const dataRes = await fetch('/data');
-//         const dataJson = await dataRes.json();
+        const dataRes = await fetch('/data');
+        const dataJson = await dataRes.json();
 
-//         if (dataJson.error) {
-//             throw new Error(dataJson.error);
-//         }
+        if (dataJson.error) {
+            throw new Error(dataJson.error);
+        }
 
-//         data = dataJson.data;
-//         currentPage = 1;
+        data = dataJson.data;
+        currentPage = 1;
 
-//         // 🔁 This was previously in window.onload – move it here
-//         filteredData = data;
-//         createPagination();
-//         showPage(currentPage);
+        // 🔁 This was previously in window.onload – move it here
+        filteredData = data;
+        createPagination();
+        showPage(currentPage);
 
-//         message.className = "alert alert-success mt-3";
-//         message.textContent = "Scraping and results loaded successfully!";
-//         message.classList.remove('d-none');
-//     } catch (err) {
-//         message.className = "alert alert-danger mt-3";
-//         message.textContent = `Error: ${err.message}`;
-//         message.classList.remove('d-none');
-//     } finally {
-//         spinner.style.display = 'none';
-//     }
-// });
+        message.className = "alert alert-success mt-3";
+        message.textContent = "Scraping and results loaded successfully!";
+        message.classList.remove('d-none');
+    } catch (err) {
+        message.className = "alert alert-danger mt-3";
+        message.textContent = `Error: ${err.message}`;
+        message.classList.remove('d-none');
+    } finally {
+        spinner.style.display = 'none';
+    }
+});
 
 
 
@@ -114,52 +114,108 @@ window.onload = function () {
     askButton.disabled = isDisabled;
 };
 
+
+
+// Automatically run scraping for keywords on page load
+// window.onload = async function () {
+//     // const keywords = ['Semi Conductor','Hiring for IT Professionals','Learning Management system','Software development','Hiring for IT Manpower','Mobile application'];
+//     // const keywords = ['Mobile application'];
+
+//     spinner.style.display = 'inline-block';
+//     tableBody.innerHTML = '';
+//     paginationControls.innerHTML = '';
+//     message.classList.add('d-none');
+//     let allResults = [];
+
+//     // for (const keyword of keywords) {
+//     //     const formData = new FormData();
+//     //     formData.append('keyword', keyword);
+
+//     //     try {
+//     //         const scrapeRes = await fetch('/scrape', {
+//     //             method: 'POST',
+//     //             body: formData
+//     //         });
+
+//     //         const scrapeText = await scrapeRes.text();
+
+//     //         if (!scrapeRes.ok) {
+//     //             console.error(`Scrape failed for ${keyword}:`, scrapeText);
+//     //             continue;
+//     //         }
+
+//     //         await new Promise(resolve => setTimeout(resolve, 3000)); // 3 seconds       
+            
+
+//     //         // if (dataJson.error) {
+//     //         //     console.error(`Data error for ${keyword}:`, dataJson.error);
+//     //         //     continue;
+//     //         // }
+
+//     //         // allResults = allResults.concat(dataJson.data);
+//     //     } catch (err) {
+//     //         console.error(`Error during scraping for ${keyword}:`, err);
+//     //     }
+//     // }
+//     const dataRes = await fetch('/data');
+//     const dataJson = await dataRes.json();
+//     data = dataJson.data;
+//     filteredData = data;
+//     createPagination();
+//     showPage(currentPage);
+
+//     message.className = "alert alert-success mt-3";
+//     message.textContent = "Automatic scraping and results loaded successfully!";
+//     message.classList.remove('d-none');
+//     spinner.style.display = 'none';
+// };
+
 form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        spinner.style.display = 'inline-block';
-        message.classList.add('d-none');
-        tableBody.innerHTML = '';
-        paginationControls.innerHTML = '';
-    
-        const keyword = document.getElementById('keyword').value;
-        const formData = new FormData();
-        formData.append('keyword', keyword);
-    
-        try {
-            const scrapeRes = await fetch('/scrape', {
-                method: 'POST',
-                body: formData
-            });
-    
-            const scrapeText = await scrapeRes.text();
-    
-            if (!scrapeRes.ok) {
-                throw new Error(scrapeText || 'Scraping failed');
-            }
-    
-            const dataRes = await fetch('/data');
-            const dataJson = await dataRes.json();
-    
-            if (dataJson.error) {
-                throw new Error(dataJson.error);
-            }
-    
-            data = dataJson.data;
-            applyFilters();
-            createPagination();
-            showPage(currentPage);
-    
-            message.className = "alert alert-success mt-3";
-            message.textContent = "Scraping and results loaded successfully!";
-            message.classList.remove('d-none');
-        } catch (err) {
-            message.className = "alert alert-danger mt-3";
-            message.textContent = `Error: ${err.message}`;
-            message.classList.remove('d-none');
-        } finally {
-            spinner.style.display = 'none';
+    e.preventDefault();
+    spinner.style.display = 'inline-block';
+    message.classList.add('d-none');
+    tableBody.innerHTML = '';
+    paginationControls.innerHTML = '';
+
+    const keyword = document.getElementById('keyword').value;
+    const formData = new FormData();
+    formData.append('keyword', keyword);
+
+    try {
+        const scrapeRes = await fetch('/scrape', {
+            method: 'POST',
+            body: formData
+        });
+
+        const scrapeText = await scrapeRes.text();
+
+        if (!scrapeRes.ok) {
+            throw new Error(scrapeText || 'Scraping failed');
         }
-    });
+
+        const dataRes = await fetch('/data');
+        const dataJson = await dataRes.json();
+
+        if (dataJson.error) {
+            throw new Error(dataJson.error);
+        }
+
+        data = dataJson.data;
+        applyFilters();
+        createPagination();
+        showPage(currentPage);
+
+        message.className = "alert alert-success mt-3";
+        message.textContent = "Scraping and results loaded successfully!";
+        message.classList.remove('d-none');
+    } catch (err) {
+        message.className = "alert alert-danger mt-3";
+        message.textContent = `Error: ${err.message}`;
+        message.classList.remove('d-none');
+    } finally {
+        spinner.style.display = 'none';
+    }
+});
 
 // Helper to parse "DD-MM-YYYY hh:mm AM/PM" into a Date object
 function parseCustomDate(dateString) {
@@ -308,35 +364,27 @@ function showPage(page) {
             <td>${row["Department"]}</td>
             <td>${row["Start Date"]}</td>
             <td>${row["End Date"]}</td>
-            <td><a href="${row["Downloadable File URL"]}" class="btn btn-sm btn-outline-primary download-link"><img src="/static/icon.jpg" alt="Chat Icon" style="width: 45px; height: 40px;"></a></td>
+            <td><a href="${row["Downloadable File URL"]}" class="btn btn-sm btn-outline-primary download-link">Ask Agent</a></td>
         `;
         tableBody.appendChild(tr);
     });
 
     document.querySelectorAll('.download-link').forEach(link => {
         link.addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent immediate navigation
-    
-            const downloadUrl = link.getAttribute('href'); // Save href before setTimeout
-    
+            event.preventDefault();
             console.log("Download link clicked");
     
             setTimeout(function() {
                 openAiPopup();
-    
-                // Create a temporary anchor element to trigger the download
                 const a = document.createElement('a');
-                a.href = downloadUrl;
-                a.setAttribute('download', ''); // Let browser decide filename
-                a.style.display = 'none';
-    
+                a.href = event.target.href;
+                a.setAttribute('download', ''); // This hints the browser to download
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-            }, 1500); // Adjust delay as needed
+            }, 1500);
         });
     });
-    
     
 }
 
@@ -394,7 +442,7 @@ function openAiPopup() {
     const queryFormPopup = document.getElementById("query-form-popup");
 
     aiPopup.style.display = "block";
-    // statusMessage.innerText = "File has been processed. You can now ask questions.";
+    statusMessage.innerText = "File has been processed. You can now ask questions.";
     queryFormPopup.style.display = "block";
 }
 

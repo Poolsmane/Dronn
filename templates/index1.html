@@ -109,21 +109,19 @@
     <hr />
     <div id="ai-content" style="margin-top:15px; overflow-y:auto; height:80%;">
         <!-- Status or Processing Message -->
-        <!-- <div id="status-message" style="margin-bottom: 10px;">Processing... Please wait.</div> -->
+        <div id="status-message" style="margin-bottom: 10px;">Processing... Please wait.</div>
 
         <!-- Question Form (hidden initially, shown after processing) -->
         <form id="query-form-popup" style="display:none;">
+            <div>
             <label for="question_popup">Ask a question:</label><br>
-            <div style="display: flex; gap: 8px; margin-top: 5px;">
-              <input type="text" id="question_popup" name="question" style="flex: 1;" required>
-              <button type="submit" id="askButton" style="width: 120px; padding:8px 16px;">Ask</button>
-            </div>
-          </form>
-          
-          <div id="agenttext" style="margin-bottom: 10px;">Processing... Please wait.</div>
+            <input type="text" id="question_popup" name="question" style="width:100%;" required><br><br>
+            <button type="submit" id= "askButton" style="padding:8px 16px;">Ask</button>
+        </div>
+        </form>
+
         <!-- Answer section -->
         <div id="popup-answer" style="margin-top:20px; font-weight:bold;"></div>
-        <!-- <div id="agenttext" style="margin-bottom: 10px;">Processing... Please wait.</div> -->
     </div>
 </div>
 

@@ -7,7 +7,7 @@ from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
 import subprocess
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify, send_from_directory, send_file
 from flask_cors import CORS
 import pandas as pd
 import subprocess
@@ -21,6 +21,7 @@ from move_file import run_task
 from rag_agent import monitor_and_run_rag
 from rag_agent import process_with_langchain_agent 
 import csv
+from io import BytesIO
 CORS(app)
 file_path1 = '/home/kartikeyapatel/Videos/gem/latest_moved_path.txt'  # Replace with your actual text file path
 
@@ -63,6 +64,46 @@ def index():
 
  # Import the function you created
 
+
+#download without opening a new tab
+@app.route('/download')
+def download():
+    pdf_url = request.args.get('url')
+    if not pdf_url:
+        return "Missing URL", 400
+
+    try:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                          "(KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+            "Accept": "application/pdf",
+            "Referer": "https://bidplus.gem.gov.in/"
+        }
+
+        print(f"Downloading from: {pdf_url}")
+
+        response = requests.get(pdf_url, headers=headers, timeout=20)
+        print(f"Status Code: {response.status_code}")
+        print(f"Content-Type: {response.headers.get('Content-Type')}")
+
+        response.raise_for_status()  # Raise error if status not 200
+
+        content_type = response.headers.get("Content-Type", "")
+        if "application/pdf" not in content_type:
+            return f"Expected PDF, but got: {content_type}", 400
+
+        filename = pdf_url.split("/")[-1] or "document.pdf"
+
+        return send_file(BytesIO(response.content),
+                         as_attachment=True,
+                         download_name=filename,
+                         mimetype="application/pdf")
+    except requests.exceptions.RequestException as e:
+        print(f"RequestException: {e}")
+        return f"Request error: {e}", 500
+    except Exception as e:
+        print(f"General Exception: {e}")
+        return f"Server error: {e}", 500
 @app.route('/ask_question', methods=['POST'])
 def ask_question():
     bid="GEM/2025/B/6055240"
@@ -84,7 +125,10 @@ def ask_question():
         print(e)
         return jsonify({"success": False, "error": str(e)}), 500
 
-
+@app.route("/status.txt")
+def get_status():
+    return send_file("status.txt")
+    
 @app.route('/scrape', methods=['POST'])
 def scrape():
     keyword = request.form.get('keyword')

@@ -19,7 +19,10 @@ import threading
 from langchain_ollama import OllamaLLM
 import pdfplumber
 # Load better embedding model (local, no key)
-embedding_model = HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
+embedding_model = HuggingFaceEmbeddings(
+    model_name="BAAI/bge-small-en-v1.5",
+    model_kwargs={"device": "cpu"}
+)
 reader = Reader(lang_list=['en'])
 
 # Store final extracted content globally
@@ -37,6 +40,7 @@ def extract_text_and_links(pdf_path):
         doc = fitz.open(pdf_path)
         for i in range(len(doc)):
             page = doc.load_page(i)
+            print(f'page are :{i}')
             links.update([link.get('uri') for link in page.get_links() if 'uri' in link])
 
         # Extract text with unstructured.partition.pdf
@@ -88,9 +92,8 @@ def download_linked_files(links, download_dir):
         except Exception as e:
             print(f"❌ Error downloading {link}: {e}")
     return downloaded_files
-
 # ✅ Summarize extracted text and save to a file
-def summarize_and_save(full_text, output_file="summary.txt", chunk_size=3000, overlap=200):
+def summarize_and_save(full_text, output_file="summary.txt", chunk_size=3000, overlap=350):
     if not full_text.strip():
         print("⚠️ No text to summarize.")
         return
@@ -136,6 +139,7 @@ def summarize_and_save(full_text, output_file="summary.txt", chunk_size=3000, ov
 def handle_pdf_and_links(current_pdf_path):
     global all_text_final
     try:
+        update_status_flag("processing")
         text, links = extract_text_and_links(current_pdf_path)
         all_text = text
         if links:
@@ -145,17 +149,25 @@ def handle_pdf_and_links(current_pdf_path):
                     file_text, _ = extract_text_and_links(fpath)
                     all_text += "\n" + file_text
         if not all_text.strip():
+            update_status_flag("error")
             print("⚠️ No content found.")
             return
         
         all_text_final = all_text
+        update_status_flag("done")
         summarize_and_save(all_text_final)
         print("✅ Extracted content ready.")
     except Exception as e:
+        update_status_flag("error")
         print(f"❌ Error processing PDF: {e}")
 
+
+def update_status_flag(status, path="status.txt"):
+    with open(path, "w") as f:
+        f.write(status)
+
 # ✅ Finds relevant chunks with FAISS
-def find_relevant_chunks(text, query, chunk_size=1300, overlap=140, top_k=5):
+def find_relevant_chunks(text, query, chunk_size=1000, overlap=90, top_k=5):
     try:
         if not text.strip():
             return "❌ No text found after preprocessing."

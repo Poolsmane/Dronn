@@ -6,7 +6,7 @@ intermediate_csv = 'filtered_bid_results.csv'
 output_csv = 'filtered_bid_results.csv'
 
 # Keywords for selective matching in 'Items'
-keywords = ['software', 'consultancy', 'custom', 'development', 'learning']
+keywords = ['software', 'consultancy', 'custom', 'development', 'learning','web development','blockchain','application development','backend','mobile application','platform development','artificial intelligence','cyber security','security compliance']
 
 # Step 1: Read previous filtered data (if any)
 existing_rows = []
