@@ -23,14 +23,11 @@ from rag_agent import process_with_langchain_agent
 import csv
 from io import BytesIO
 CORS(app)
-file_path1 = '/home/kartikeyapatel/Videos/gem/latest_moved_path.txt'  # Replace with your actual text file path
-
-# Clear all contents of the file
-with open(file_path1, mode='w', encoding='utf-8'):
-    pass  # This will truncate the file to zero length
 
 
-print(f"Cleared all data from {file_path1}, header preserved.")
+
+
+# print(f"Cleared all data from {file_path1}, header preserved.")
 
 file_path = 'filtered_bid_results.csv'  # Replace with your actual file path
 
@@ -45,6 +42,19 @@ with open(file_path, mode='w', newline='', encoding='utf-8') as outfile:
     writer.writerow(headers)
 
 print(f"Cleared all data from {file_path}, header preserved.")
+def clear_csv_file(filepath):
+    try:
+        with open(filepath, mode='r', newline='', encoding='utf-8') as infile:
+            reader = csv.reader(infile)
+            headers = next(reader)
+
+        with open(filepath, mode='w', newline='', encoding='utf-8') as outfile:
+            writer = csv.writer(outfile)
+            writer.writerow(headers)
+
+        print(f"Cleared all data from {filepath}, header preserved.")
+    except Exception as e:
+        print(f"Failed to clear {filepath}: {e}")
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 embedder = SentenceTransformer('all-MiniLM-L6-v2')
@@ -129,28 +139,44 @@ def ask_question():
 def get_status():
     return send_file("status.txt")
     
+from flask import request
+import subprocess
+import time
+
 @app.route('/scrape', methods=['POST'])
 def scrape():
-    keyword = request.form.get('keyword')
+    keywords_input = request.form.get('keyword', '')
+    clear_csv_file('bid_results.csv')
+    clear_csv_file('filtered_bid_results.csv')
+    
+    if not keywords_input.strip():
+        return "No keywords provided", 400
 
-    # 1. Run scraper
-    try:
-        result = subprocess.run(['python3', 'scrap.py', keyword], check=True, capture_output=True, text=True)
-    except subprocess.CalledProcessError as e:
-        print(e)
-        return f"Scraper error: {e.stderr}", 500
+    # Split the keywords by comma and strip whitespace
+    keywords = tuple(kw.strip() for kw in keywords_input.split(',') if kw.strip())
 
-    # 2. Run remove.py immediately after
+    # 1. Run scrap.py for each keyword
+    for keyword in keywords:
+        try:
+            print(f"Scraping for: {keyword}")
+            result = subprocess.run(['python3', 'scrap.py', keyword], check=True, capture_output=True, text=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error scraping '{keyword}': {e}")
+            return f"Scraper error for '{keyword}': {e.stderr}", 500
+
+    # 2. Run remove_rows.py after all keywords are scraped
     try:
+        print("Running row filter...")
         filter_result = subprocess.run(['python3', 'remove_rows.py'], check=True, capture_output=True, text=True)
+        clear_csv_file('bid_results.csv')
     except subprocess.CalledProcessError as e:
-        print(e)
+        print(f"Error filtering rows: {e}")
         return f"Filter error: {e.stderr}", 500
 
-    # 3. Wait a bit to ensure file write completion (optional but helps on some systems)
+    # 3. Optional delay for write buffer
     time.sleep(0.5)
 
-    return 'Scraping and filtering completed successfully.', 200
+    return f"Scraping completed for: {', '.join(keywords)}", 200
 
 
 

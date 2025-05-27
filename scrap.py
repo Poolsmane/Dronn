@@ -178,14 +178,17 @@ for attempt in range(1, MAX_RETRIES + 1):
 
         # ====== Save to CSV ======
         keys = ['Bid Number', 'Items', 'Quantity', 'Department', 'Start Date', 'End Date', 'Downloadable File URL']
+        
         if scraped_data:
-            with open(OUTPUT_CSV, 'w', newline='', encoding='utf-8') as f:
+            file_exists = os.path.isfile(OUTPUT_CSV)
+
+            with open(OUTPUT_CSV, 'a', newline='', encoding='utf-8') as f:
                 writer = csv.DictWriter(f, fieldnames=keys)
-                writer.writeheader()
+                if not file_exists:
+                    writer.writeheader()
                 writer.writerows(scraped_data)
-            print(f"\n✅ Saved {len(scraped_data)} bids to {OUTPUT_CSV}")
-        else:
-            print("No data to save to CSV.")
+
+            print(f"\n✅ Appended {len(scraped_data)} bids to {OUTPUT_CSV}")
 
         break  # Success, exit retry loop
 

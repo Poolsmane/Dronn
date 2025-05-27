@@ -42,67 +42,6 @@ function readTextFile() {
   // Call initially and then every 2 seconds
   readTextFile();
   setInterval(readTextFile, 2000);
-// form.addEventListener('submit', async (e) => {
-//     e.preventDefault();
-
-//     const keyword = document.getElementById('keyword').value.trim();
-//     if (!keyword) {
-//         message.className = "alert alert-warning mt-3";
-//         message.textContent = "Please enter a keyword to scrape.";
-//         message.classList.remove('d-none');
-//         return;
-//     }
-
-//     spinner.style.display = 'inline-block';
-//     message.classList.add('d-none');
-//     tableBody.innerHTML = '';
-//     paginationControls.innerHTML = '';
-
-//     const formData = new FormData();
-//     formData.append('keyword', keyword);
-
-//     try {
-//         const scrapeRes = await fetch('/scrape', {
-//             method: 'POST',
-//             body: formData
-//         });
-
-//         const scrapeText = await scrapeRes.text();
-
-//         if (!scrapeRes.ok) {
-//             throw new Error(scrapeText || 'Scraping failed');
-//         }
-
-//         await new Promise(resolve => setTimeout(resolve, 1500)); // Wait for backend to process
-
-//         const dataRes = await fetch('/data');
-//         const dataJson = await dataRes.json();
-
-//         if (dataJson.error) {
-//             throw new Error(dataJson.error);
-//         }
-
-//         data = dataJson.data;
-//         currentPage = 1;
-
-//         // 🔁 This was previously in window.onload – move it here
-//         filteredData = data;
-//         createPagination();
-//         showPage(currentPage);
-
-//         message.className = "alert alert-success mt-3";
-//         message.textContent = "Scraping and results loaded successfully!";
-//         message.classList.remove('d-none');
-//     } catch (err) {
-//         message.className = "alert alert-danger mt-3";
-//         message.textContent = `Error: ${err.message}`;
-//         message.classList.remove('d-none');
-//     } finally {
-//         spinner.style.display = 'none';
-//     }
-// });
-
-
 
 window.onload = function () {
     spinner.style.display = 'none';
@@ -388,6 +327,39 @@ globalSearchInput.addEventListener('input', () => {
     showPage(currentPage);
 });
 
+document.getElementById('downloadFiltered').addEventListener('click', function () {
+    const filteredData = applyFilters();
+
+    if (!filteredData || filteredData.length === 0) {
+        alert("No data available to download.");
+        return;
+    }
+
+    const headers = Object.keys(filteredData[0]);
+    const csvRows = [headers.join(',')];
+
+    filteredData.forEach(row => {
+        const values = headers.map(header => {
+            const cell = String(row[header] ?? "").replace(/"/g, '""');
+            return `"${cell}"`;
+        });
+        csvRows.push(values.join(','));
+    });
+
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "filtered_bid_results.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+});
+
+
 function openAiPopup() {
     const aiPopup = document.getElementById("ai-agent-popup");
     const statusMessage = document.getElementById("status-message");
@@ -437,3 +409,6 @@ function disableButton() {
     askButton.disabled = false;
     localStorage.setItem("askButtonDisabled", "false");
   }
+
+
+  
