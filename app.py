@@ -27,13 +27,9 @@ CORS(app)
 
 file_path1 = 'latest_moved_path.txt'
 
-# Step 1: Read the first line (header)
-with open(file_path1, mode='r', encoding='utf-8') as infile:
-    header = infile.readline()
-
-# Step 2: Overwrite the file with only the header
+# Overwrite the file with an empty string to clear its contents
 with open(file_path1, mode='w', encoding='utf-8') as outfile:
-    outfile.write(header)
+    outfile.write('')
 
 
 # print(f"Cleared all data from {file_path1}, header preserved.")
