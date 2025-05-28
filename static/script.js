@@ -247,34 +247,39 @@ function showPage(page) {
             <td>${row["Department"]}</td>
             <td>${row["Start Date"]}</td>
             <td>${row["End Date"]}</td>
-            <td><a href="${row["Downloadable File URL"]}" class="btn btn-sm btn-outline-primary download-link"><img src="/static/icon.jpg" alt="Chat Icon" style="width: 45px; height: 40px;"></a></td>
+            <td>
+                <a href="${row["Downloadable File URL"]}" class="btn btn-sm btn-outline-primary download-link">
+                    <img src="/static/icon.jpg" alt="Chat Icon" style="width: 45px; height: 40px;">
+                </a>
+            </td>
         `;
         tableBody.appendChild(tr);
     });
-
+    
     document.querySelectorAll('.download-link').forEach(link => {
         link.addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent immediate navigation
+            event.preventDefault();
     
-            const downloadUrl = link.getAttribute('href'); // Save href before setTimeout
+            const originalUrl = link.getAttribute('href');
+            const encodedUrl = encodeURIComponent(originalUrl);
+            const flaskDownloadUrl = `/download?url=${encodedUrl}`;
     
             console.log("Download link clicked");
     
-            setTimeout(function() {
-                openAiPopup();
+            openAiPopup();
     
-                // Create a temporary anchor element to trigger the download
+            setTimeout(() => {
                 const a = document.createElement('a');
-                a.href = downloadUrl;
-                a.setAttribute('download', ''); // Let browser decide filename
+                a.href = flaskDownloadUrl;
                 a.style.display = 'none';
-    
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-            }, 1500); // Adjust delay as needed
+            }, 1500);
         });
     });
+    
+    
     
     
 }
