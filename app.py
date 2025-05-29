@@ -12,6 +12,8 @@ from flask_cors import CORS
 import pandas as pd
 import subprocess
 import time
+import move_file
+from move_file import run_task
 import threading
 app = Flask(__name__)
 DOWNLOAD_FOLDER = os.getcwd()
@@ -158,6 +160,42 @@ def get_status():
     return send_file("status.txt")
     
 
+def download_files(url, save_dir):
+    os.makedirs(save_dir, exist_ok=True)
+    print(f"📥 Downloading file from URL: {url}")
+
+    try:
+        headers = {
+            "User-Agent": "Mozilla/5.0",
+            "Accept": "*/*",
+        }
+        response = requests.get(url, headers=headers, stream=True, timeout=20, allow_redirects=True)
+        print(f"🔁 Status Code: {response.status_code}")
+        content_type = response.headers.get("Content-Type", "")
+        print(f"🧾 Content-Type: {content_type}")
+
+        if "application/pdf" not in content_type:
+            # Not a PDF; save HTML to debug
+            debug_path = os.path.join(save_dir, "debug_response.html")
+            with open(debug_path, "wb") as f:
+                f.write(response.content)
+            return None, f"⚠️ Not a PDF. Saved debug HTML to {debug_path}"
+
+        filename = os.path.basename(urlparse(url).path)
+        if not filename.endswith(".pdf"):
+            filename += ".pdf"
+        filepath = os.path.join(save_dir, filename)
+
+        with open(filepath, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+        print(f"✅ Saved to: {filepath}")
+        return filename, None
+
+    except Exception as e:
+        return None, f"❌ Exception: {str(e)}"
+
 @app.route('/scrape', methods=['POST'])
 def scrape():
     keywords_input = request.form.get('keyword', '')
@@ -191,7 +229,48 @@ def scrape():
     # 3. Optional delay for write buffer
     time.sleep(0.5)
 
-    return f"Scraping completed for: {', '.join(keywords)}", 200
+    # 4. Read filtered_bid_results.csv and download all files from "Downloadable File URL"
+    filtered_csv = 'filtered_bid_results.csv'
+    save_dir = '/home/kartikeyapatel/Videos/gem/first_extracted_data'
+
+    # Read all rows
+    with open(filtered_csv, 'r', newline='', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+        fieldnames = reader.fieldnames or []
+
+    # Add a new column if not present
+    if 'Downloaded Filename' not in fieldnames:
+        fieldnames.append('Downloaded Filename')
+
+    # Download files and add filename info
+    for row in rows:
+        url = row.get('Downloadable File URL', '').strip()
+        if url:
+            print(f"Downloading file from URL: {url}")
+            filename, error = download_files(url, save_dir)
+            if filename:
+                row['Downloaded Filename'] = filename
+            else:
+                row['Downloaded Filename'] = f"ERROR: {error}"
+        else:
+            row['Downloaded Filename'] = 'No URL'
+
+    # Write back the CSV with new column
+    with open(filtered_csv, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    return f"Scraping completed for: {', '.join(keywords)} and files downloaded.", 200
+
+
+
+from flask import request, jsonify
+import csv
+import os
+
+
 
 
 
@@ -213,6 +292,29 @@ def download_file(filename):
         print("Error")
         return "File not found", 404
 
+
+#added for the context button
+@app.route("/context_data")
+def get_context_data():
+    bid = request.args.get("bid")
+    if not bid:
+        return jsonify({"status": "error", "message": "Missing 'bid' parameter"}), 400
+
+    if not os.path.exists("static/final_bid_results.csv"):
+        return jsonify({"status": "error", "message": "CSV file not found"}), 500
+
+    try:
+        with open("static/final_bid_results.csv", newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                if row["Bid Number"].strip().lower() == bid.strip().lower():
+                    return jsonify({"status": "success", "row": row})
+    except Exception as e:
+        print(f"Error reading CSV or processing bid: {e}")  # 👈 This will show up in your Flask logs
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+    return jsonify({"status": "not found"})
+
 ALL_TEXT_CACHE = ""  # optional: to speed things up
  # Track whether a file has been successfully processed
 
@@ -226,11 +328,11 @@ def safe_thread(target_func):
     return wrapper
 
 if __name__ == '__main__':
-    # thread = threading.Thread(target=safe_thread(move_file.run_task))
+    thread = threading.Thread(target=safe_thread(move_file.run_task))
     # thread.daemon = True
     thread1 = threading.Thread(target=safe_thread(monitor_and_run_rag))
     # thread1.daemon = True
-    # thread.start()
+    thread.start()
     thread1.start()
     app.run(host='0.0.0.0', port=8080, debug=True)
     print("Flask App exitec")

@@ -252,6 +252,10 @@ function showPage(page) {
                     <img src="/static/icon.jpg" alt="Chat Icon" style="width: 45px; height: 40px;">
                 </a>
             </td>
+            <td>
+            <button class="btn btn-sm btn-outline-secondary context-btn" data-bid="${row["Bid Number"]}">Context</button>
+            </td>
+
         `;
         tableBody.appendChild(tr);
     });
@@ -278,11 +282,45 @@ function showPage(page) {
             }, 1500);
         });
     });
-    
-    
-    
+   //contect button code snippet
+   document.querySelectorAll('.context-btn').forEach(button => {
+    button.addEventListener('click', function () {
+        const bidNumber = button.getAttribute('data-bid');
+        if (!bidNumber) {
+            console.warn("No bid number found for context button.");
+            return;
+        }
+
+        console.log("Fetching context for Bid Number:", bidNumber);
+
+        fetch(`/context_data?bid=${encodeURIComponent(bidNumber)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Context response:", data);
+
+                if (data && data.status === "success" && data.row) {
+                    const content = Object.entries(data.row)
+                        .map(([key, value]) => `<strong>${key}:</strong> ${value}`)
+                        .join('<br>');
+                    openContextPopup(content);
+                } else {
+                    openContextPopup("Processing... please wait.");
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching context data:", error);
+                openContextPopup("Error occurred while fetching context.");
+            });
+    });
+});
     
 }
+
 
 document.getElementById('quantity-filter').addEventListener('input', (e) => {
     filters.quantityCondition = e.target.value;
@@ -416,4 +454,28 @@ function disableButton() {
   }
 
 
-  
+  //context-button code
+
+function openContextPopup(content) {
+let popup = document.getElementById('context-popup');
+if (!popup) {
+    popup = document.createElement('div');
+    popup.id = 'context-popup';
+    popup.style.position = 'fixed';
+    popup.style.top = '20%';
+    popup.style.left = '50%';
+    popup.style.transform = 'translateX(-50%)';
+    popup.style.padding = '20px';
+    popup.style.maxWidth = '600px';
+    popup.style.backgroundColor = '#fff';
+    popup.style.border = '1px solid #ccc';
+    popup.style.boxShadow = '0 0 10px rgba(0,0,0,0.2)';
+    popup.style.zIndex = 1000;
+    popup.innerHTML = `
+        <button onclick="this.parentElement.remove()" style="float:right;" class="btn btn-sm btn-danger">Close</button>
+        <div id="popup-content" style="margin-top: 20px;"></div>
+    `;
+    document.body.appendChild(popup);
+}
+popup.querySelector('#popup-content').innerHTML = content;
+}
